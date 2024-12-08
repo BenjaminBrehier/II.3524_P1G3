@@ -43,6 +43,7 @@ class App(tk.Tk):
         buttons = [
             ("Accueil", "HomePage"),
             ("DDoS", "DdosPage"),
+            ("XSS", "XssPage"),
             ("Scan", "ScanPage"),
             ("Info", "InfoPage")
         ]
