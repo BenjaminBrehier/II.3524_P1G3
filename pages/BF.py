@@ -1,14 +1,14 @@
 import tkinter as tk
-from tkinter import messagebox, filedialog
-import requests
+from tkinter import ttk, messagebox, filedialog
 import os
+import requests
 import threading
 
 class bfPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        
+
         # Titre de la page
         self.title_label = tk.Label(self, text="Brute Force Login Attack", font=("Arial", 16))
         self.title_label.pack(pady=20)
@@ -23,17 +23,33 @@ class bfPage(tk.Frame):
         self.username_label = tk.Label(self, text="Choisir un fichier des Logins:")
         self.username_label.pack(pady=5)
 
-        # Bouton pour permettre de sélectionner le fichier des logins
-        self.username_file_button = tk.Button(self, text="Sélectionner un fichier des Logins", command=self.select_login_file)
-        self.username_file_button.pack(pady=5)
+        # Menu déroulant pour choisir entre `username.txt` ou importer depuis le PC
+        self.username_combobox = ttk.Combobox(self, state="readonly", width=40)
+        self.username_combobox.pack(pady=5)
+
+        # Ajouter les options à la combobox
+        self.username_combobox['values'] = ['username.txt', 'Importer depuis mon PC']
+        self.username_combobox.set('username.txt')  # Valeur par défaut
+
+        # Bouton pour confirmer le choix du fichier des logins
+        self.username_select_button = tk.Button(self, text="Confirmer le choix des Logins", command=self.handle_username_selection)
+        self.username_select_button.pack(pady=5)
 
         # Fichiers des mots de passe
         self.password_label = tk.Label(self, text="Choisir un fichier des Mots de Passe:")
         self.password_label.pack(pady=5)
 
-        # Bouton pour permettre de sélectionner le fichier des mots de passe
-        self.password_file_button = tk.Button(self, text="Sélectionner un fichier des Mots de Passe", command=self.select_password_file)
-        self.password_file_button.pack(pady=5)
+        # Menu déroulant pour choisir entre `mdp.txt` ou importer depuis le PC
+        self.password_combobox = ttk.Combobox(self, state="readonly", width=40)
+        self.password_combobox.pack(pady=5)
+
+        # Ajouter les options à la combobox
+        self.password_combobox['values'] = ['mdp.txt', 'Importer depuis mon PC']
+        self.password_combobox.set('mdp.txt')  # Valeur par défaut
+
+        # Bouton pour confirmer le choix du fichier des mots de passe
+        self.password_select_button = tk.Button(self, text="Confirmer le choix des Mots de Passe", command=self.handle_password_selection)
+        self.password_select_button.pack(pady=5)
 
         # Bouton pour démarrer l'attaque
         self.start_button = tk.Button(self, text="Lancer l'attaque", command=self.start_attack)
@@ -59,49 +75,55 @@ class bfPage(tk.Frame):
         self.is_attack_running = False
         self.stop_requested = False
 
-    def select_login_file(self):
-        """Ouvrir une boîte de dialogue pour sélectionner un fichier des logins depuis l'ordinateur ou interne."""
-        # Dossier interne où sont les fichiers "username.txt" et "mdp.txt"
-        default_folder = os.path.join(os.getcwd(), 'Dictionnaire')
+    def handle_username_selection(self):
+        """Gérer la sélection du fichier des logins."""
+        selection = self.username_combobox.get()
+        if selection == 'username.txt':
+            # Fichier interne (username.txt) sélectionné
+            default_folder = os.path.join(os.getcwd(), 'Dictionnaire')
+            internal_file = os.path.join(default_folder, 'username.txt')
+            if os.path.exists(internal_file):
+                self.login_file_path = internal_file
+                messagebox.showinfo("Fichier sélectionné", f"Fichier interne sélectionné : {internal_file}")
+            else:
+                messagebox.showerror("Erreur", "Le fichier interne 'username.txt' est introuvable dans le dossier 'Dictionnaire'.")
+        elif selection == 'Importer depuis mon PC':
+            # Ouvrir une boîte de dialogue pour sélectionner un fichier depuis le PC
+            file_path = filedialog.askopenfilename(
+                title="Importer un fichier des Logins depuis mon PC",
+                filetypes=[("Fichiers texte", "*.txt"), ("Tous les fichiers", "*.*")]
+            )
+            if file_path:
+                self.login_file_path = file_path
+                messagebox.showinfo("Fichier sélectionné", f"Fichier importé depuis le PC : {file_path}")
+            else:
+                self.login_file_path = None
+                messagebox.showwarning("Aucun fichier sélectionné", "Aucun fichier de logins n'a été sélectionné.")
 
-        # Si le dossier existe, on commence par afficher ces fichiers
-        initial_dir = default_folder if os.path.exists(default_folder) else os.getcwd()
-
-        # Ouvrir la boîte de dialogue pour choisir un fichier
-        file_path = filedialog.askopenfilename(
-            title="Sélectionner un fichier des Logins",
-            initialdir=initial_dir,  # Dossier initial où ouvrir la boîte de dialogue
-            filetypes=[("Fichiers texte", "*.txt"), ("Tous les fichiers", "*.*")]
-        )
-
-        if file_path:
-            self.login_file_path = file_path
-            messagebox.showinfo("Fichier sélectionné", f"Fichier de logins sélectionné : {os.path.basename(file_path)}")
-        else:
-            self.login_file_path = None
-            messagebox.showwarning("Aucun fichier sélectionné", "Aucun fichier de logins sélectionné.")
-
-    def select_password_file(self):
-        """Ouvrir une boîte de dialogue pour sélectionner un fichier des mots de passe depuis l'ordinateur ou interne."""
-        # Dossier interne où sont les fichiers "username.txt" et "mdp.txt"
-        default_folder = os.path.join(os.getcwd(), 'Dictionnaire')
-
-        # Si le dossier existe, on commence par afficher ces fichiers
-        initial_dir = default_folder if os.path.exists(default_folder) else os.getcwd()
-
-        # Ouvrir la boîte de dialogue pour choisir un fichier
-        file_path = filedialog.askopenfilename(
-            title="Sélectionner un fichier des Mots de Passe",
-            initialdir=initial_dir,  # Dossier initial où ouvrir la boîte de dialogue
-            filetypes=[("Fichiers texte", "*.txt"), ("Tous les fichiers", "*.*")]
-        )
-
-        if file_path:
-            self.password_file_path = file_path
-            messagebox.showinfo("Fichier sélectionné", f"Fichier de mots de passe sélectionné : {os.path.basename(file_path)}")
-        else:
-            self.password_file_path = None
-            messagebox.showwarning("Aucun fichier sélectionné", "Aucun fichier de mots de passe sélectionné.")
+    def handle_password_selection(self):
+        """Gérer la sélection du fichier des mots de passe."""
+        selection = self.password_combobox.get()
+        if selection == 'mdp.txt':
+            # Fichier interne (mdp.txt) sélectionné
+            default_folder = os.path.join(os.getcwd(), 'Dictionnaire')
+            internal_file = os.path.join(default_folder, 'mdp.txt')
+            if os.path.exists(internal_file):
+                self.password_file_path = internal_file
+                messagebox.showinfo("Fichier sélectionné", f"Fichier interne sélectionné : {internal_file}")
+            else:
+                messagebox.showerror("Erreur", "Le fichier interne 'mdp.txt' est introuvable dans le dossier 'Dictionnaire'.")
+        elif selection == 'Importer depuis mon PC':
+            # Ouvrir une boîte de dialogue pour sélectionner un fichier depuis le PC
+            file_path = filedialog.askopenfilename(
+                title="Importer un fichier des Mots de Passe depuis mon PC",
+                filetypes=[("Fichiers texte", "*.txt"), ("Tous les fichiers", "*.*")]
+            )
+            if file_path:
+                self.password_file_path = file_path
+                messagebox.showinfo("Fichier sélectionné", f"Fichier importé depuis le PC : {file_path}")
+            else:
+                self.password_file_path = None
+                messagebox.showwarning("Aucun fichier sélectionné", "Aucun fichier de mots de passe n'a été sélectionné.")
 
     def start_attack(self):
         """Démarrer l'attaque brute force."""
