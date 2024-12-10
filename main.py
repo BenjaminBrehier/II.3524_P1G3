@@ -54,6 +54,7 @@ class App(tk.Tk):
             ("Sniffer", "SnifferPage"),
             ("Path Traversal", "PathTraversalPage"),
             ("XSS", "XssPage"),
+            ("SQL Injection", "SQLiPage"),
             ("Nmap", "NmapPage"),
             ("Vulnerable Components", "VulnerableComponentsPage"),
             ("BruteForce", "bruteforcePage"),
