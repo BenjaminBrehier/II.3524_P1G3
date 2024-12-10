@@ -44,6 +44,7 @@ class App(tk.Tk):
             ("Accueil", "HomePage"),
             ("DDoS", "DdosPage"),
             ("XSS", "XssPage"),
+            ("Nmap", "NmapPage"),
             ("Scan", "ScanPage"),
             ("Info", "InfoPage")
         ]
