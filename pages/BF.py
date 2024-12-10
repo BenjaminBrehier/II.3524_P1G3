@@ -2,9 +2,9 @@ import tkinter as tk
 from tkinter import messagebox
 import requests
 
-class BFPage(tk.Frame):
-    def _init_(self, parent, controller):
-        super()._init_(parent)
+class bfPage(tk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
         self.controller = controller
         
         self.title_label = tk.Label(self, text="Brute Force Login Attack", font=("Arial", 16))

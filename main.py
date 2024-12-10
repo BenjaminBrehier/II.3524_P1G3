@@ -45,7 +45,7 @@ class App(tk.Tk):
             ("DDoS", "DdosPage"),
             ("Scan", "ScanPage"),
             ("Info", "InfoPage"),
-            ("BruteForce", "BFPage")
+            ("BruteForce", "bfPage")
 
         ]
         
