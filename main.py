@@ -44,7 +44,9 @@ class App(tk.Tk):
             ("Accueil", "HomePage"),
             ("DDoS", "DdosPage"),
             ("Scan", "ScanPage"),
-            ("Info", "InfoPage")
+            ("Info", "InfoPage"),
+            ("BruteForce", "BFPage")
+
         ]
         
         for text, page in buttons:
