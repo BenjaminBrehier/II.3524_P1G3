@@ -47,8 +47,10 @@ class App(tk.Tk):
             ("Nmap", "NmapPage"),
             ("Scan", "ScanPage"),
             ("Info", "InfoPage"),
-            ("Privilege Check", "PrivilegeCheckPage")
-            ("BruteForce", "bfPage")
+            ("Privilege Check", "PrivilegeCheckPage"),
+            ("BruteForce", "bfPage"),
+            ("Access Control", "AccessControlPage"),
+            ("Buffer Overflow", "bufferoverflowPage")
 
         ]
         
