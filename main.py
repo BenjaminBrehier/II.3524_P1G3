@@ -44,6 +44,7 @@ class App(tk.Tk):
             ("Accueil", "HomePage"),
             ("DDoS", "DdosPage"),
             ("XSS", "XssPage"),
+            ("SQL Injection", "SQLiPage"),
             ("Scan", "ScanPage"),
             ("Info", "InfoPage")
         ]
