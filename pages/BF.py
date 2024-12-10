@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox, filedialog
 import requests
-import threading  # Pour permettre l'arrêt propre de l'attaque
+import os
+import threading
 
 class bfPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -18,18 +19,23 @@ class bfPage(tk.Frame):
         self.url_entry = tk.Entry(self, width=40)
         self.url_entry.pack(pady=5)
 
-        # Boutons pour sélectionner les fichiers (login et mdp)
-        self.login_file_button = tk.Button(self, text="Sélectionner le fichier des Logins", command=self.select_login_file)
-        self.login_file_button.pack(pady=5)
-        self.login_file_label = tk.Label(self, text="Aucun fichier sélectionné", font=("Arial", 10), fg="gray")
-        self.login_file_label.pack(pady=5)
+        # Fichiers des logins
+        self.username_label = tk.Label(self, text="Choisir un fichier des Logins:")
+        self.username_label.pack(pady=5)
 
-        self.password_file_button = tk.Button(self, text="Sélectionner le fichier des Mots de Passe", command=self.select_password_file)
+        # Bouton pour permettre de sélectionner le fichier des logins
+        self.username_file_button = tk.Button(self, text="Sélectionner un fichier des Logins", command=self.select_login_file)
+        self.username_file_button.pack(pady=5)
+
+        # Fichiers des mots de passe
+        self.password_label = tk.Label(self, text="Choisir un fichier des Mots de Passe:")
+        self.password_label.pack(pady=5)
+
+        # Bouton pour permettre de sélectionner le fichier des mots de passe
+        self.password_file_button = tk.Button(self, text="Sélectionner un fichier des Mots de Passe", command=self.select_password_file)
         self.password_file_button.pack(pady=5)
-        self.password_file_label = tk.Label(self, text="Aucun fichier sélectionné", font=("Arial", 10), fg="gray")
-        self.password_file_label.pack(pady=5)
 
-        # Boutons pour démarrer et arrêter l'attaque
+        # Bouton pour démarrer l'attaque
         self.start_button = tk.Button(self, text="Lancer l'attaque", command=self.start_attack)
         self.start_button.pack(pady=10)
 
@@ -54,28 +60,48 @@ class bfPage(tk.Frame):
         self.stop_requested = False
 
     def select_login_file(self):
-        """Ouvrir une boîte de dialogue pour sélectionner le fichier des logins."""
+        """Ouvrir une boîte de dialogue pour sélectionner un fichier des logins depuis l'ordinateur ou interne."""
+        # Dossier interne où sont les fichiers "username.txt" et "mdp.txt"
+        default_folder = os.path.join(os.getcwd(), 'Dictionnaire')
+
+        # Si le dossier existe, on commence par afficher ces fichiers
+        initial_dir = default_folder if os.path.exists(default_folder) else os.getcwd()
+
+        # Ouvrir la boîte de dialogue pour choisir un fichier
         file_path = filedialog.askopenfilename(
-            title="Sélectionner le fichier des Logins",
+            title="Sélectionner un fichier des Logins",
+            initialdir=initial_dir,  # Dossier initial où ouvrir la boîte de dialogue
             filetypes=[("Fichiers texte", "*.txt"), ("Tous les fichiers", "*.*")]
         )
+
         if file_path:
             self.login_file_path = file_path
-            self.login_file_label.config(text=f"Logins : {file_path}", fg="black")
+            messagebox.showinfo("Fichier sélectionné", f"Fichier de logins sélectionné : {os.path.basename(file_path)}")
         else:
-            self.login_file_label.config(text="Aucun fichier sélectionné", fg="gray")
+            self.login_file_path = None
+            messagebox.showwarning("Aucun fichier sélectionné", "Aucun fichier de logins sélectionné.")
 
     def select_password_file(self):
-        """Ouvrir une boîte de dialogue pour sélectionner le fichier des mots de passe."""
+        """Ouvrir une boîte de dialogue pour sélectionner un fichier des mots de passe depuis l'ordinateur ou interne."""
+        # Dossier interne où sont les fichiers "username.txt" et "mdp.txt"
+        default_folder = os.path.join(os.getcwd(), 'Dictionnaire')
+
+        # Si le dossier existe, on commence par afficher ces fichiers
+        initial_dir = default_folder if os.path.exists(default_folder) else os.getcwd()
+
+        # Ouvrir la boîte de dialogue pour choisir un fichier
         file_path = filedialog.askopenfilename(
-            title="Sélectionner le fichier des Mots de Passe",
+            title="Sélectionner un fichier des Mots de Passe",
+            initialdir=initial_dir,  # Dossier initial où ouvrir la boîte de dialogue
             filetypes=[("Fichiers texte", "*.txt"), ("Tous les fichiers", "*.*")]
         )
+
         if file_path:
             self.password_file_path = file_path
-            self.password_file_label.config(text=f"Mots de passe : {file_path}", fg="black")
+            messagebox.showinfo("Fichier sélectionné", f"Fichier de mots de passe sélectionné : {os.path.basename(file_path)}")
         else:
-            self.password_file_label.config(text="Aucun fichier sélectionné", fg="gray")
+            self.password_file_path = None
+            messagebox.showwarning("Aucun fichier sélectionné", "Aucun fichier de mots de passe sélectionné.")
 
     def start_attack(self):
         """Démarrer l'attaque brute force."""
@@ -162,8 +188,8 @@ class bfPage(tk.Frame):
             response = requests.post(url, data=data)
             if "welcome" in response.text.lower():  # Adaptez cette condition selon la réponse du serveur
                 return True
-        except requests.exceptions.RequestException:
-            pass
+        except requests.exceptions.RequestException as e:
+            messagebox.showerror("Erreur", f"Erreur de connexion : {e}")
         return False
 
     def stop_attack(self):
