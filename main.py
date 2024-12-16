@@ -48,7 +48,7 @@ class App(tk.Tk):
             ("Scan", "ScanPage"),
             ("Info", "InfoPage"),
             ("Privilege Check", "PrivilegeCheckPage"),
-            ("BruteForce", "bfPage"),
+            ("BruteForce", "bruteforcePage"),
             ("Access Control", "AccessControlPage"),
             ("Buffer Overflow", "bufferoverflowPage")
 
