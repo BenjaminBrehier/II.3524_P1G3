@@ -45,8 +45,9 @@ class App(tk.Tk):
             ("DDoS", "DdosPage"),
             ("Scan", "ScanPage"),
             ("Info", "InfoPage"),
-            ("Brute Force", "bfPage"),
-            ("Access Control", "AccessControlPage")
+            ("Brute Force", "bruteforcePage"),
+            ("Access Control", "AccessControlPage"),
+            ("Buffer Overflow", "bufferoverflowPage")
 
         ]
         
