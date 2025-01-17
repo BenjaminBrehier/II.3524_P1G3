@@ -43,12 +43,14 @@ class App(tk.Tk):
         buttons = [
             ("Accueil", "HomePage"),
             ("DDoS", "DdosPage"),
+            ("XSS", "XssPage"),
+            ("Nmap", "NmapPage"),
             ("Scan", "ScanPage"),
             ("Info", "InfoPage"),
             ("Brute Force", "bruteforcePage"),
             ("Access Control", "AccessControlPage"),
             ("Buffer Overflow", "bufferoverflowPage")
-
+            ("Privilege Check", "PrivilegeCheckPage")
         ]
         
         for text, page in buttons:
