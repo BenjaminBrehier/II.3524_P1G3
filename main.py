@@ -46,7 +46,8 @@ class App(tk.Tk):
             ("XSS", "XssPage"),
             ("Nmap", "NmapPage"),
             ("Scan", "ScanPage"),
-            ("Info", "InfoPage")
+            ("Info", "InfoPage"),
+            ("Privilege Check", "PrivilegeCheckPage")
         ]
         
         for text, page in buttons:
