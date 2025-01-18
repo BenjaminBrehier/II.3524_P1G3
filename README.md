@@ -9,3 +9,11 @@ Pour installer les dépendances nécessaires, exécutez la commande suivante :
 ```bash
 pip install -r requirements.txt
 ```
+
+## Configuration
+
+Pour utiliser Vulnerable Components, vous devez définir la variable d'environnement `GITHUB_TOKEN`.
+
+```bash
+export GITHUB_TOKEN="YOUR_GITHUB_TOKEN"
+```

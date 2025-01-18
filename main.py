@@ -48,6 +48,7 @@ class App(tk.Tk):
             ("Scan", "ScanPage"),
             ("Info", "InfoPage"),
             ("Privilege Check", "PrivilegeCheckPage"),
+            ("Vulnerable Components", "VulnerableComponentsPage"),
             ("BruteForce", "bruteforcePage"),
             ("Access Control", "AccessControlPage"),
             ("Buffer Overflow", "bufferoverflowPage")
