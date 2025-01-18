@@ -48,6 +48,8 @@ class App(tk.Tk):
             ("Scan", "ScanPage"),
             ("Info", "InfoPage"),
             ("Privilege Check", "PrivilegeCheckPage")
+            ("BruteForce", "bfPage")
+
         ]
         
         for text, page in buttons:
