@@ -50,6 +50,7 @@ class App(tk.Tk):
         buttons = [
             ("Attaques multiples", "AttackSelectionPage"),
             ("DDoS", "DdosPage"),
+            ("ICMP DDoS", "ICMPDdosPage"),
             ("Certificat SSL", "SSLTLSCheckerPage"),
             ("Sniffer", "SnifferPage"),
             ("Path Traversal", "PathTraversalPage"),
