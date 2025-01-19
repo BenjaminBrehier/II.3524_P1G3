@@ -53,9 +53,10 @@ class App(tk.Tk):
             ("Privilege Check", "PrivilegeCheckPage"),
             ("Vulnerable Components", "VulnerableComponentsPage"),
             ("BruteForce", "bruteforcePage"),
-            ("Access Control", "AccessControlPage"),
-            ("Buffer Overflow", "bufferoverflowPage")
-
+            # ("Access Control", "AccessControlPage"),
+            ("Buffer Overflow", "bufferoverflowPage"),
+            ("SubDomain Enumeration", "SubdomainEnumerationPage"),
+            ("CSRF", "CsrfPage")
         ]
         
         for text, page in buttons:

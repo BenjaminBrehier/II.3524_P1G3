@@ -81,7 +81,9 @@ class PrivilegeCheckPage(tk.Frame):
         self.result_area.insert(tk.END, "Lancement du fuzzing...\n")
         common_paths = [
             "api/login", "api/register", "api/users", "admin", "test",
-            "auth/login", "auth/register", "v1/users", "v1/admin", "public"
+            "auth/login", "auth/register", "v1/users", "v1/admin", "public", "settings", "hidden", "api", "dashboard",
+            "config", "login", "logout", "register", "backup",
+            "data", "private", "secure"
         ]
         endpoints = set()
         for path in common_paths:
