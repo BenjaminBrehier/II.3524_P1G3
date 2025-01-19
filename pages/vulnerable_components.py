@@ -16,6 +16,11 @@ class VulnerableComponentsPage(tk.Frame):
         self.url_entry = tk.Entry(self, width=50)
         self.url_entry.pack(pady=5, padx=10)
 
+        tk.Label(self, text="Nombre de vulnérabilités à afficher :").pack(anchor="w", padx=10)
+        self.vuln_count_entry = tk.Entry(self, width=10)
+        self.vuln_count_entry.insert(0, "3")  # Valeur par défaut
+        self.vuln_count_entry.pack(pady=5, padx=10)
+
         tk.Button(self, text="Analyser", command=self.analyze_components).pack(pady=10)
 
         # Zone de résultats
@@ -25,6 +30,7 @@ class VulnerableComponentsPage(tk.Frame):
 
     def analyze_components(self):
         target_url = self.url_entry.get().strip()
+        vuln_count = int(self.vuln_count_entry.get().strip())
 
         if not target_url.startswith("http"):
             self.result_area.insert(tk.END, "Veuillez entrer une URL valide (commençant par http ou https).\n")
@@ -52,7 +58,7 @@ class VulnerableComponentsPage(tk.Frame):
 
             self.result_area.insert(tk.END, "\nVérification des vulnérabilités...\n")
             for name, version in components + frameworks:
-                vulnerability_info = self.check_vulnerabilities(name, version)
+                vulnerability_info = self.check_vulnerabilities(name, version, vuln_count)
                 self.result_area.insert(tk.END, vulnerability_info + "\n")
         except Exception as e:
             self.result_area.insert(tk.END, f"Erreur : {e}\n")
@@ -148,14 +154,14 @@ class VulnerableComponentsPage(tk.Frame):
             return match.group(1)
         return "Version inconnue"
 
-    def query_github_advisory(self, package_name):
+    def query_github_advisory(self, package_name, vuln_count):
         """Rechercher des vulnérabilités pour un package via GitHub GraphQL API."""
         url = "https://api.github.com/graphql"
         token = os.getenv("GITHUB_TOKEN")
 
         query = """
-        query($package: String!) {
-          securityVulnerabilities(first: 10, package: $package) {
+        query($package: String!, $first: Int!) {
+          securityVulnerabilities(first: $first, package: $package) {
             edges {
               node {
                 advisory {
@@ -175,7 +181,7 @@ class VulnerableComponentsPage(tk.Frame):
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json",
         }
-        variables = {"package": package_name}
+        variables = {"package": package_name, "first": vuln_count}
 
         try:
             response = requests.post(
@@ -185,15 +191,14 @@ class VulnerableComponentsPage(tk.Frame):
             if response.status_code == 200:
                 data = response.json()
                 vulnerabilities = data["data"]["securityVulnerabilities"]["edges"]
-                # Limiter à 3 recommandations par package
-                return vulnerabilities[:3]
+                return vulnerabilities
 
             return f"Erreur GitHub : {response.status_code} - {response.text}"
         except Exception as e:
             return f"Erreur lors de l'accès à l'API GitHub : {e}"
 
-    def check_vulnerabilities(self, name, version):
-        vulnerabilities = self.query_github_advisory(name)
+    def check_vulnerabilities(self, name, version, vuln_count):
+        vulnerabilities = self.query_github_advisory(name, vuln_count)
         if isinstance(vulnerabilities, str):  # Cas d'erreur
             return f"{name}: {vulnerabilities}"
         if not vulnerabilities:
@@ -206,3 +211,7 @@ class VulnerableComponentsPage(tk.Frame):
             reference = advisory["references"][0]["url"] if advisory["references"] else "Aucun lien"
             result += f"- Gravité : {severity}\n  Description : {description}\n  Référence : {reference}\n"
         return result
+
+    def start_attack(self):
+        """Method to start the analysis externally."""
+        self.analyze_components()
