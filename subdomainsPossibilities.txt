@@ -337,6 +337,11 @@ bigdata
 analytics-tools
 spark
 hadoop
+prod
+pprod
+test
+staging
+dev
 database-admin
 database-tools
 database-monitoring

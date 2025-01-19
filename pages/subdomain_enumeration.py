@@ -22,7 +22,8 @@ class SubdomainEnumerationPage(tk.Frame):
 
     def enumerate_subdomains(self):
         """Effectue l'énumération des sous-domaines."""
-        domain = self.url_entry.get().strip()
+        url = self.url_entry.get().strip()
+        domain = url.split("//")[-1].split("/")[0]
         if not domain:
             self.result_text.insert("end", "Veuillez entrer une URL valide.\n")
             return
@@ -37,11 +38,8 @@ class SubdomainEnumerationPage(tk.Frame):
             url = f"http://{sub}.{domain}"
             try:
                 response = requests.get(url, timeout=3)
-                if response.status_code == 200:
-                    found_subdomains.append(url)
-                    self.result_text.insert("end", f"[FOUND] {url} (Code: 200)\n")
-                else:
-                    self.result_text.insert("end", f"[NOT FOUND] {url} (Code: {response.status_code})\n")
+                found_subdomains.append(url)
+                self.result_text.insert("end", f"[FOUND] {url} (Code: {response.status_code})\n")
             except requests.exceptions.RequestException:
                 print(f"[ERROR] {url} inaccessible")
 
