@@ -25,18 +25,27 @@ class AttackSelectionPage(tk.Frame):
             # "XSS": tk.BooleanVar(),
             "CSRF": tk.BooleanVar(),
             "Subdomain Enumeration": tk.BooleanVar(),
-            # "SSL/TLS Check": tk.BooleanVar(),
+            "SSL/TLS Check": tk.BooleanVar(),
             "Nmap": tk.BooleanVar(),
             "Buffer Overflow": tk.BooleanVar(),
             "Access Control": tk.BooleanVar(),
             "Vulnerable Components": tk.BooleanVar()
         }
 
+        # Checkbutton to select/deselect all attacks
+        self.select_all_var = tk.BooleanVar()
+        tk.Checkbutton(self, text="Tout sélectionner", variable=self.select_all_var, command=self.toggle_select_all).pack(anchor="w")
+
         for attack, var in self.attacks.items():
             tk.Checkbutton(self, text=attack, variable=var).pack(anchor="w")
 
         # Button to proceed to the wizard
         tk.Button(self, text="Suivant", command=self.go_to_wizard).pack(pady=20)
+
+    def toggle_select_all(self):
+        select_all = self.select_all_var.get()
+        for var in self.attacks.values():
+            var.set(select_all)
 
     def go_to_wizard(self):
         selected_attacks = [attack for attack, var in self.attacks.items() if var.get()]

@@ -56,7 +56,7 @@ class WizardController:
                 self.frames[attack] = XssPage(self.parent, self.controller, self.global_url, False)
             elif attack == "Sniffer":
                 self.frames[attack] = SnifferPage(self.parent, self.controller, self.global_url, False)
-            elif attack == "SSL/TLS Checker":
+            elif attack == "SSL/TLS Check":
                 self.frames[attack] = SSLTLSCheckerPage(self.parent, self.controller, self.global_url, False)
 
     def show_current_page(self):

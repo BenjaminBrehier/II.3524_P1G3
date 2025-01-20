@@ -23,7 +23,7 @@ class ICMPDdosPage(tk.Frame):
         tk.Label(self, text="URL cible ou Adresse IP cible :").pack(pady=5)
         self.target_entry = tk.Entry(self, width=40)
         self.target_entry.pack(pady=10)
-        
+        self.target_entry.insert(0, self.global_url)
         tk.Label(self, text="Nombre de requêtes :").pack(pady=5)
         self.nbRequestsVar = tk.StringVar(value="100")
         nbRequestsDropdown = tk.OptionMenu(self, self.nbRequestsVar, "1", "5", "10", "20", "30", "50", "100", "200", "500", "1000", "2500", "5000", "7500","100000")
@@ -75,8 +75,9 @@ class ICMPDdosPage(tk.Frame):
             self.completed_requests = 0
             self.results_displayed = False
             self.status_label.config(text="Lancement en cours...")
-            self.stop_button.config(state="normal")
-            self.start_button.config(state="disabled")
+            if self.show_button:
+                self.stop_button.config(state="normal")
+                self.start_button.config(state="disabled")
 
             for _ in range(num_threads):
                 Thread(target=self.attack_thread, args=(target_ip,)).start()
