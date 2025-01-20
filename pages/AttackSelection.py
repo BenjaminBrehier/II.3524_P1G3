@@ -20,7 +20,7 @@ class AttackSelectionPage(tk.Frame):
         self.attacks = {
             "DDoS": tk.BooleanVar(),
             "ICMP DDoS": tk.BooleanVar(),
-            # "Brute Force": tk.BooleanVar(),
+             "Brute Force": tk.BooleanVar(),
             "Path Traversal": tk.BooleanVar(),
             # "XSS": tk.BooleanVar(),
             "CSRF": tk.BooleanVar(),
