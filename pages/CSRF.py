@@ -3,15 +3,16 @@ import requests
 from tkinter import scrolledtext
 
 class CsrfPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url):
         super().__init__(parent)
         self.controller = controller
+        self.global_url = global_url
 
         tk.Label(self, text="Simulation d'attaque CSRF", font=("Arial", 16)).pack(pady=10)
         tk.Label(self, text="Entrez l'URL de la cible (avec un formulaire vulnérable) :").pack(anchor="w", padx=10)
         self.url_entry = tk.Entry(self, width=50)
         self.url_entry.pack(pady=5, padx=10)
-
+        self.url_entry.insert(0, self.global_url)
         tk.Label(self, text="Paramètres de la requête (format JSON) :").pack(anchor="w", padx=10)
         self.payload_entry = tk.Text(self, height=10, width=50)
         self.payload_entry.pack(pady=5, padx=10)
@@ -29,6 +30,9 @@ class CsrfPage(tk.Frame):
         target_url = self.url_entry.get().strip()
         payload_text = self.payload_entry.get("1.0", tk.END).strip()
         session_id = self.session_id_entry.get().strip()
+        reportLog = ""
+
+        reportLog += "## Analyse de l'attaque CSRF :\n"
 
         if not target_url.startswith("http"):
             self.result_area.insert(tk.END, "Veuillez entrer une URL valide.\n")
@@ -51,8 +55,19 @@ class CsrfPage(tk.Frame):
             if response.status_code == 200:
                 self.result_area.insert(tk.END, f"Succès : L'attaque CSRF a été exécutée.\n")
                 self.result_area.insert(tk.END, f"Réponse : {response.text[:500]}...\n")
+                reportLog += "Succès : L'attaque CSRF a été exécutée.\n"
             else:
                 self.result_area.insert(tk.END, f"Échec : Statut {response.status_code}\n")
+                reportLog += f"Échec : Statut {response.status_code}\n"
 
         except Exception as e:
             self.result_area.insert(tk.END, f"Erreur lors de l'attaque CSRF : {e}\n")
+            reportLog += f"Erreur lors de l'attaque CSRF : {e}\n"
+        
+        with open("report.md", "a", encoding="utf-8") as file:
+            file.write(reportLog)
+            file.write("\n\n")
+
+    def start_attack(self):
+        """Method to start the analysis externally."""
+        self.simulate_csrf()

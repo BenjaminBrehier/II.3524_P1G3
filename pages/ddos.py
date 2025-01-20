@@ -5,21 +5,21 @@ from threading import Thread, Event
 import time
 
 class DdosPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url):
         super().__init__(parent)
         self.stop_event = Event()  # Event pour arrêter les threads
         self.attack_start_time = None  # Timer début de l'attaque
         self.attack_end_time = None  # Timer fin de l'attaque
         self.completed_requests = 0  # Compteur des requêtes effectuées
         self.results_displayed = False  # Drapeau pour éviter plusieurs fenêtres
-        
+        self.global_url = global_url
         labelAttack = tk.Label(self, text="Page DDoS", font=("Arial", 16))
         labelAttack.pack(pady=20)
         
         tk.Label(self, text="URL cible :").pack(pady=5)
         self.url_entry = tk.Entry(self, width=40)
         self.url_entry.pack(pady=10)
-        
+        self.url_entry.insert(0, self.global_url)
         tk.Label(self, text="Nombre de requêtes :").pack(pady=5)
         self.nbRequestsVar = tk.StringVar(value="100")
         nbRequestsDropdown = tk.OptionMenu(self, self.nbRequestsVar, "1", "5", "10", "20", "30", "50", "100", "200", "500", "1000")
@@ -43,6 +43,9 @@ class DdosPage(tk.Frame):
         
         self.status_label = tk.Label(self, text="")
         self.status_label.pack(pady=10)
+        
+        self.results_text = tk.Text(self, height=15, width=60, wrap=tk.WORD, state=tk.DISABLED)
+        self.results_text.pack(pady=10)
     
     def start_attack(self):
         url = self.url_entry.get()
@@ -118,20 +121,12 @@ class DdosPage(tk.Frame):
         self.status_label.config(text="") # Réinitialisation du texte de statut
     
     def show_results(self):
-        #Affiche les résultats de l'attaque dans une nouvelle fenêtre.
+        #Affiche les résultats de l'attaque dans une text area.
         if not self.attack_start_time or not self.attack_end_time:
             return # Si l'attaque n'a pas été correctement démarrée ou terminée
         
         elapsed_time = self.attack_end_time - self.attack_start_time # Temps écoulé
         initial_time = self.numRequests * self.interval # Temps initial estimé
-        
-        # Nouvelle fenêtre pour afficher les résultats
-        results_window = Toplevel(self)
-        results_window.title("Résultats de l'attaque")
-        results_window.geometry("400x300")
-        
-        results_label = tk.Label(results_window, text="Résumé de l'attaque", font=("Arial", 14))
-        results_label.pack(pady=10)
         
         results_text = (
             f"URL cible : {self.url_entry.get()}\n"
@@ -142,7 +137,15 @@ class DdosPage(tk.Frame):
             f"Intervalle entre les requêtes : {self.interval:.2f} secondes\n"
             f"Nombre de threads : {self.numThreads}\n"
         )
-        tk.Label(results_window, text=results_text, justify="left").pack(pady=10, padx=10)
+
+        with open("report.md", "a", encoding="utf-8") as file:
+            file.write(f"## Analyse de l'attaque DDoS\n")
+            lines = results_text.splitlines()
+            for line in lines[:-1]:
+                file.write(f"- {line}\n")
+            file.write("\n\n")
         
-        close_button = tk.Button(results_window, text="Fermer", command=results_window.destroy)
-        close_button.pack(pady=10)  
+        self.results_text.config(state=tk.NORMAL)
+        self.results_text.insert(tk.END, results_text)
+        self.results_text.config(state=tk.DISABLED)
+        self.results_text.yview(tk.END)  # Scroll automatique

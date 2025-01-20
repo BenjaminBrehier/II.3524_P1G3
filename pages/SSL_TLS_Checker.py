@@ -1,14 +1,14 @@
 import tkinter as tk
-from tkinter import Toplevel
 import ssl
 import socket
 from urllib.parse import urlparse
 import datetime
 
 
-class CryptoPage(tk.Frame):
-    def __init__(self, parent, controller):
+class SSLTLSCheckerPage(tk.Frame):
+    def __init__(self, parent, controller, global_url):
         super().__init__(parent)
+        self.global_url = global_url
 
         label = tk.Label(self, text="Page SSL/TLS Checker", font=("Arial", 16))
         label.pack(pady=20)
@@ -16,12 +16,16 @@ class CryptoPage(tk.Frame):
         tk.Label(self, text="URL cible :").pack(pady=5)
         self.url_entry = tk.Entry(self, width=40)
         self.url_entry.pack(pady=10)
-
+        self.url_entry.insert(0, self.global_url)
         self.check_button = tk.Button(self, text="Vérifier la sécurité SSL/TLS", command=self.check_ssl)
         self.check_button.pack(pady=10)
 
         self.status_label = tk.Label(self, text="", wraplength=600, justify="left")
         self.status_label.pack(pady=10)
+
+        # Text area to display results
+        self.results_text = tk.Text(self, wrap="word", height=20, width=60, state="disabled")
+        self.results_text.pack(pady=10, padx=10)
 
     def check_ssl(self):
         url = self.url_entry.get()
@@ -29,11 +33,11 @@ class CryptoPage(tk.Frame):
             self.status_label.config(text="Erreur : Veuillez entrer une URL valide.")
             return
 
-        #Extraire le nom d'hôte
+        # Extraire le nom d'hôte
         try:
             parsed_url = urlparse(url)
             host = parsed_url.netloc if parsed_url.netloc else parsed_url.path
-            port = 443 # Port par défaut pour HTTPS (80 pour http il me semble)
+            port = 443  # Port par défaut pour HTTPS
 
             # Créé une connexion sécurisée
             context = ssl.create_default_context()
@@ -55,12 +59,12 @@ class CryptoPage(tk.Frame):
                     subject = cert.get('subject', [])
                     subject_details = ", ".join(f"{key}={value}" for entry in subject for key, value in entry)
 
-                    #Génère le rapport principal
+                    # Génère le rapport principal
                     result = f"URL cible : {url}\n"
                     result += f"Algorithme de chiffrement : {cipher[0]}\n"
                     result += f"Niveau de chiffrement : {cipher[1]} bits\n"
                     result += f"Certificat valide jusqu'au : {cert_expiry_date}\n"
-                    result += f"Autorité émettrice : {issuer_details}\n" # Ajout de l'autorité de certif émettrice
+                    result += f"Autorité émettrice : {issuer_details}\n"
 
                     if days_left < 0:
                         result += "⚠️  Certificat expiré !\n"
@@ -77,24 +81,27 @@ class CryptoPage(tk.Frame):
                         result += "✅  Algorithme de chiffrement robuste.\n"
 
                     self.show_results(result)
+                    self.save_results_to_file(result)
         except ssl.SSLError as e:
             self.status_label.config(text=f"Erreur SSL : {e}")
         except Exception as e:
             self.status_label.config(text=f"Erreur : {e}")
 
     def show_results(self, result):
-        """Afficher les résultats dans une nouvelle fenêtre."""
-        results_window = Toplevel(self)
-        results_window.title("Résultats SSL/TLS")
-        results_window.geometry("500x400")
+        """Afficher les résultats dans la zone de texte."""
+        self.results_text.config(state="normal")
+        self.results_text.delete("1.0", tk.END)
+        self.results_text.insert("1.0", result)
+        self.results_text.config(state="disabled")
 
-        results_label = tk.Label(results_window, text="Résumé de la vérification", font=("Arial", 14))
-        results_label.pack(pady=10)
+    def save_results_to_file(self, result):
+        """Sauvegarde les résultats dans un fichier markdown."""
+        with open("report.md", "a", encoding="utf-8") as file:
+            file.write("## SSL/TLS Checker\n\n")
+            for line in result.splitlines():
+                file.write(f"- {line}\n")
+            file.write("\n")
 
-        results_text = tk.Text(results_window, wrap="word", height=20, width=60)
-        results_text.insert("1.0", result)
-        results_text.config(state="disabled") #Rendre le texte non modifiable
-        results_text.pack(pady=10, padx=10)
-
-        close_button = tk.Button(results_window, text="Fermer", command=results_window.destroy)
-        close_button.pack(pady=10)
+    def start_attack(self):
+        """Method to start the analysis externally."""
+        self.check_ssl()

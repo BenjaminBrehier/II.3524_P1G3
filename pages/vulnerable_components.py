@@ -7,15 +7,16 @@ import os
 
 
 class VulnerableComponentsPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url):
         super().__init__(parent)
 
         self.controller = controller
+        self.global_url = global_url
         tk.Label(self, text="Analyse des Composants Vulnérables", font=("Arial", 16)).pack(pady=10)
         tk.Label(self, text="Entrez l'URL cible :").pack(anchor="w", padx=10)
         self.url_entry = tk.Entry(self, width=50)
         self.url_entry.pack(pady=5, padx=10)
-
+        self.url_entry.insert(0, self.global_url)
         tk.Label(self, text="Nombre de vulnérabilités à afficher :").pack(anchor="w", padx=10)
         self.vuln_count_entry = tk.Entry(self, width=10)
         self.vuln_count_entry.insert(0, "3")  # Valeur par défaut
@@ -39,6 +40,9 @@ class VulnerableComponentsPage(tk.Frame):
         self.result_area.delete(1.0, tk.END)
         self.result_area.insert(tk.END, f"Analyse en cours pour : {target_url}\n\n")
 
+        markdown_results = f"## Analyse des Composants Vulnérables\n\n"
+        markdown_results += f"URL cible : {target_url}\n"
+
         try:
             # Recherche des composants (bibliothèques et frameworks)
             components = self.find_components(target_url)
@@ -46,22 +50,34 @@ class VulnerableComponentsPage(tk.Frame):
 
             if not components and not frameworks:
                 self.result_area.insert(tk.END, "Aucun composant ou framework détecté.\n")
+                markdown_results += "Aucun composant ou framework détecté.\n"
+                self.save_results(markdown_results)
                 return
 
             self.result_area.insert(tk.END, f"Composants détectés :\n")
+            markdown_results += "### Composants détectés :\n"
             for name, version in components:
                 self.result_area.insert(tk.END, f"  - {name}: {version}\n")
+                markdown_results += f"- **{name}**: {version}\n"
 
             self.result_area.insert(tk.END, f"\nFrameworks détectés :\n")
+            markdown_results += "\n### Frameworks détectés :\n"
             for name, version in frameworks:
                 self.result_area.insert(tk.END, f"  - {name}: {version}\n")
+                markdown_results += f"- **{name}**: {version}\n"
 
             self.result_area.insert(tk.END, "\nVérification des vulnérabilités...\n")
+            markdown_results += "\n### Vérification des vulnérabilités :\n"
             for name, version in components + frameworks:
                 vulnerability_info = self.check_vulnerabilities(name, version, vuln_count)
                 self.result_area.insert(tk.END, vulnerability_info + "\n")
+                markdown_results += f"\n#### {name}:\n{vulnerability_info}\n"
+            
+            self.save_results(markdown_results)
         except Exception as e:
             self.result_area.insert(tk.END, f"Erreur : {e}\n")
+            markdown_results += f"Erreur : {e}\n"
+            self.save_results(markdown_results)
 
     def find_components(self, url):
         """Détecte les bibliothèques, composants front-end et technologies serveur."""
@@ -211,6 +227,11 @@ class VulnerableComponentsPage(tk.Frame):
             reference = advisory["references"][0]["url"] if advisory["references"] else "Aucun lien"
             result += f"- Gravité : {severity}\n  Description : {description}\n  Référence : {reference}\n"
         return result
+
+    def save_results(self, results):
+        """Sauvegarde les résultats dans un fichier markdown."""
+        with open("report.md", "a", encoding="utf-8") as file:
+            file.write(results)
 
     def start_attack(self):
         """Method to start the analysis externally."""

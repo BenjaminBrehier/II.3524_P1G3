@@ -3,8 +3,9 @@ from tkinter import filedialog, messagebox
 import re
 
 class XssPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url):
         super().__init__(parent)
+        self.global_url = global_url
 
         self.title_label = tk.Label(self, text="Scanner de Vulnérabilités XSS", font=("Arial", 16))
         self.title_label.pack(pady=20)

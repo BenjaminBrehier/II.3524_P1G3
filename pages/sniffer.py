@@ -5,8 +5,9 @@ from threading import Thread, Event
 
 
 class SnifferPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url):
         super().__init__(parent)
+        self.global_url = global_url
         self.stop_event = Event()
         self.sniff_thread = None
         
@@ -90,6 +91,7 @@ class SnifferPage(tk.Frame):
                 info = f"Paquet capturé : {packet.summary()}\n"
             
             self.update_results(info)
+            self.save_results_to_file(info)
         
         try:
             sniff(
@@ -115,6 +117,18 @@ class SnifferPage(tk.Frame):
         self.results_text.see(tk.END)#Défilement automatique
         self.results_text.config(state="disabled")
 
+    def save_results_to_file(self, text):
+        """Sauvegarde les résultats dans un fichier markdown."""
+        with open("report.md", "a", encoding="utf-8") as file:
+            file.write("## Sniffer\n\n")
+            for line in text.splitlines():
+                file.write(f"- {line}\n")
+            file.write("\n")
+
     def reset_buttons(self):
         self.start_button.config(state="normal")
         self.stop_button.config(state="disabled")
+
+    def start_attack(self):
+        """Method to start the analysis externally."""
+        self.start_sniffing()

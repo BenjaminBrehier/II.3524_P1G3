@@ -1,12 +1,12 @@
 import tkinter as tk
-from tkinter import Toplevel
 import socket
 from threading import Thread, Event, Lock
+from urllib.parse import urlparse
 
 class NmapPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url):
         super().__init__(parent)
-        self.results_displayed = False
+        self.global_url = global_url
         self.stop_event = Event()  # Event to stop the scan
         self.lock = Lock()  # Lock to synchronize access to shared resources
         self.open_ports = []  # Shared list to store open ports
@@ -18,7 +18,7 @@ class NmapPage(tk.Frame):
         tk.Label(self, text="URL cible :").pack(pady=5)
         self.url_entry = tk.Entry(self, width=40)
         self.url_entry.pack(pady=10)
-
+        self.url_entry.insert(0, self.global_url)
         tk.Label(self, text="Port de début :").pack(pady=5)
         self.start_port_entry = tk.Entry(self, width=10)
         self.start_port_entry.insert(0, "1")
@@ -43,17 +43,23 @@ class NmapPage(tk.Frame):
         self.status_label = tk.Label(self, text="")
         self.status_label.pack(pady=10)
 
+        # Text area for displaying results
+        self.results_area = tk.Text(self, wrap="word", height=15, width=60)
+        self.results_area.pack(pady=10, padx=10)
+        self.results_area.config(state="disabled")
+
     def start_scan(self):
         url = self.url_entry.get()
+        parsed_url = urlparse(url)
+        hostname = parsed_url.hostname if parsed_url.hostname else url
         start_port = int(self.start_port_entry.get())
         end_port = int(self.end_port_entry.get())
         num_threads = int(self.threads_entry.get())
 
-        if not url:
+        if not hostname:
             self.status_label.config(text="Erreur : Veuillez entrer une URL valide.")
             return
 
-        self.results_displayed = False
         self.status_label.config(text="Lancement du scan...")
         self.stop_event.clear()
         self.stop_button.config(state="normal") 
@@ -63,6 +69,11 @@ class NmapPage(tk.Frame):
         self.open_ports = []
         self.active_threads = num_threads
 
+        # Clear previous results
+        self.results_area.config(state="normal")
+        self.results_area.delete(1.0, tk.END)
+        self.results_area.config(state="disabled")
+
         # Start the scan in multiple threads
         ports_per_thread = (end_port - start_port + 1) // num_threads
         for i in range(num_threads):
@@ -70,13 +81,13 @@ class NmapPage(tk.Frame):
             thread_end_port = start_port + (i + 1) * ports_per_thread - 1
             if i == num_threads - 1:
                 thread_end_port = end_port  # Ensure the last thread covers the remaining ports
-            scan_thread = Thread(target=self.custom_scan, args=(url, thread_start_port, thread_end_port))
+            scan_thread = Thread(target=self.custom_scan, args=(hostname, thread_start_port, thread_end_port))
             scan_thread.daemon = True
             scan_thread.start()
 
-    def custom_scan(self, url, start_port, end_port):
+    def custom_scan(self, hostname, start_port, end_port):
         try:
-            ip = socket.gethostbyname(url)
+            ip = socket.gethostbyname(hostname)
             for port in range(start_port, end_port + 1):
                 if self.stop_event.is_set():
                     break
@@ -95,16 +106,16 @@ class NmapPage(tk.Frame):
             with self.lock:
                 self.active_threads -= 1
                 if self.active_threads == 0:
-                    self.display_results(url)
+                    self.display_results(hostname)
 
-    def display_results(self, url):
+    def display_results(self, hostname):
         if self.open_ports:
             results = f"Ports ouverts : {', '.join(map(str, self.open_ports))}"
         else:
             results = "Aucun port ouvert trouvé."
 
         self.status_label.config(text="Scan terminé.")
-        self.show_results(url, results)
+        self.show_results(hostname, results)
         self.reset_buttons()
 
     def stop_scan(self):
@@ -116,23 +127,21 @@ class NmapPage(tk.Frame):
         self.start_button.config(state="normal") 
         self.stop_button.config(state="disabled") 
 
-    def show_results(self, url, results):
-        if self.results_displayed:
-            return
+    def show_results(self, hostname, results):
+        results_text = f"URL cible : {hostname}\n\nRésultats du scan :\n{results}"
 
-        self.results_displayed = True
-        results_window = Toplevel(self)
-        results_window.title("Résultats du scan")
-        results_window.geometry("600x400")
+        with open("report.md", "a", encoding="utf-8") as file:
+            file.write("## Analyse de l'attaque Nmap :\n")
+            file.write(results_text)
+            file.write("\n\n")
+        self.results_area.config(state="normal")
+        self.results_area.insert("1.0", results_text)
+        self.results_area.config(state="disabled")
 
-        results_label = tk.Label(results_window, text="Résumé du scan", font=("Arial", 14))
-        results_label.pack(pady=10)
-
-        results_text = f"URL cible : {url}\n\nRésultats du scan :\n{results}"
-        results_text_widget = tk.Text(results_window, wrap="word")
-        results_text_widget.insert("1.0", results_text)
-        results_text_widget.config(state="disabled")
-        results_text_widget.pack(pady=10, padx=10, fill="both", expand=True)
-
-        close_button = tk.Button(results_window, text="Fermer", command=results_window.destroy)
-        close_button.pack(pady=10)
+    def start_attack(self):
+        """Method to start the analysis externally."""
+        self.start_scan()
+        # Attendre que le scan soit terminé
+        while self.active_threads > 0:
+            self.update_idletasks()
+            self.update()

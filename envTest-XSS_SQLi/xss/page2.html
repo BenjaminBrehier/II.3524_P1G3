@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche</title>
+</head>
+<body>
+    <h1>Page de recherche</h1>
+    <form action="" method="get">
+        <label for="query">Rechercher :</label>
+        <input type="text" id="query" name="query">
+        <button type="submit">Recherche</button>
+    </form>
+
+    <h2>Résultats de la recherche :</h2>
+    <p>
+        <?php
+        if (isset($_GET['query'])) {
+            echo "Vous avez recherché : " . $_GET['query'];  // **Vulnérabilité XSS ici**
+        }
+        ?>
+    </p>
+</body>
+</html>

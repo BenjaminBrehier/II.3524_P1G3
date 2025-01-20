@@ -6,15 +6,16 @@ from urllib.parse import urljoin
 import re
 
 class PrivilegeCheckPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url):
         super().__init__(parent)
+        self.global_url = global_url
 
         self.controller = controller
         tk.Label(self, text="Vérification des privilèges des endpoints", font=("Arial", 16)).pack(pady=10)
         tk.Label(self, text="Entrez l'URL cible :").pack(anchor="w", padx=10)
         self.url_entry = tk.Entry(self, width=50)
         self.url_entry.pack(pady=5, padx=10)
-
+        self.url_entry.insert(0, self.global_url)
         tk.Button(self, text="Analyser", command=self.analyze_endpoints).pack(pady=10)
 
         # Zone de résultats
@@ -90,9 +91,11 @@ class PrivilegeCheckPage(tk.Frame):
             full_url = urljoin(url, path)
             try:
                 response = requests.get(full_url, timeout=5)
+                print(f"Test for {full_url} : {response.status_code}")
                 if response.status_code != 404:
                     endpoints.add(path)
             except Exception:
+                print(f"Error for {full_url}")
                 continue
         return endpoints
 
@@ -124,3 +127,7 @@ class PrivilegeCheckPage(tk.Frame):
                 self.result_area.insert(
                     tk.END, f"[Erreur] {method_name} {url} - {e}\n"
                 )
+
+    def start_attack(self):
+        """Method to start the analysis externally."""
+        self.analyze_endpoints()

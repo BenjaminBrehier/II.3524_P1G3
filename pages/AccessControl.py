@@ -10,9 +10,10 @@ import tkinter as tk
 from tkinter import messagebox
 
 class AccessControlPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url):
         super().__init__(parent)
         self.controller = controller
+        self.global_url = global_url
 
         # Titre de la page
         tk.Label(self, text="Access Control Scanner", font=("Arial", 16)).pack(pady=20)
@@ -21,7 +22,7 @@ class AccessControlPage(tk.Frame):
         tk.Label(self, text="URL de base :").pack(pady=5)
         self.url_entry = tk.Entry(self, width=40)
         self.url_entry.pack(pady=5)
-
+        self.url_entry.insert(0, self.global_url)
         # Bouton pour scanner les routes
         self.scan_button = tk.Button(self, text="Scanner les routes", command=self.start_scan)
         self.scan_button.pack(pady=10)
@@ -66,3 +67,13 @@ class AccessControlPage(tk.Frame):
                 self.result_text.insert(tk.END, f"Erreur: {full_url} ({str(e)})\n")
 
         self.result_text.config(state=tk.DISABLED)
+        with open("report.md", "a", encoding="utf-8") as file:
+            file.write("## Analyse de l'attaque Access Control :\n")
+            lines = self.result_text.get("1.0", tk.END).splitlines()
+            for line in lines[:-1]:
+                file.write(f"- {line}\n")
+            file.write("\n\n")
+
+    def start_attack(self):
+        """Method to start the analysis externally."""
+        self.start_scan()
