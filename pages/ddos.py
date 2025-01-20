@@ -5,7 +5,7 @@ from threading import Thread, Event
 import time
 
 class DdosPage(tk.Frame):
-    def __init__(self, parent, controller, global_url):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
         self.stop_event = Event()  # Event pour arrêter les threads
         self.attack_start_time = None  # Timer début de l'attaque
@@ -13,6 +13,7 @@ class DdosPage(tk.Frame):
         self.completed_requests = 0  # Compteur des requêtes effectuées
         self.results_displayed = False  # Drapeau pour éviter plusieurs fenêtres
         self.global_url = global_url
+        self.show_button = show_button
         labelAttack = tk.Label(self, text="Page DDoS", font=("Arial", 16))
         labelAttack.pack(pady=20)
         
@@ -35,11 +36,13 @@ class DdosPage(tk.Frame):
         self.threadsEntry.insert(0, "1")  # Nb threads par défaut
         self.threadsEntry.pack(pady=5)
         
-        self.start_button = tk.Button(self, text="Lancer l'attaque DDoS", command=self.start_attack)
-        self.start_button.pack(pady=10)
+        if self.show_button:
+            self.start_button = tk.Button(self, text="Lancer l'attaque DDoS", command=self.start_attack)
+            self.start_button.pack(pady=10)
         
-        self.stop_button = tk.Button(self, text="Stopper l'attaque", command=self.stop_attack, state="disabled")
-        self.stop_button.pack(pady=10)
+        if self.show_button:
+            self.stop_button = tk.Button(self, text="Stopper l'attaque", command=self.stop_attack, state="disabled")
+            self.stop_button.pack(pady=10)
         
         self.status_label = tk.Label(self, text="")
         self.status_label.pack(pady=10)
@@ -76,8 +79,9 @@ class DdosPage(tk.Frame):
             self.completed_requests = 0 # Réinitialise le compteur de requêtes
             self.results_displayed = False # Réinitialise le drapeau pour permettre l'affichage des résultats
             self.status_label.config(text="Lancement en cours...")
-            self.stop_button.config(state="normal")# Active le bouton "Stopper l'attaque"
-            self.start_button.config(state="disabled") # Désactive le bouton "Lancer l'attaque"
+            if self.show_button:
+                self.stop_button.config(state="normal")# Active le bouton "Stopper l'attaque"
+                self.start_button.config(state="disabled") # Désactive le bouton "Lancer l'attaque"
             
             # Lance autant de threads que spécifié
             for _ in range(self.numThreads):
@@ -116,8 +120,9 @@ class DdosPage(tk.Frame):
     
     def reset_buttons(self):
         #Réinitialise les boutons après l'arrêt de l'attaque
-        self.start_button.config(state="normal") # Réactivation du bouton "Lancer l'attaque"
-        self.stop_button.config(state="disabled") # Désactivation du bouton "Stopper l'attaque"
+        if self.show_button:
+            self.start_button.config(state="normal") # Réactivation du bouton "Lancer l'attaque"
+            self.stop_button.config(state="disabled") # Désactivation du bouton "Stopper l'attaque"
         self.status_label.config(text="") # Réinitialisation du texte de statut
     
     def show_results(self):

@@ -7,9 +7,9 @@ import os
 
 
 class VulnerableComponentsPage(tk.Frame):
-    def __init__(self, parent, controller, global_url):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
-
+        self.show_button = show_button
         self.controller = controller
         self.global_url = global_url
         tk.Label(self, text="Analyse des Composants Vulnérables", font=("Arial", 16)).pack(pady=10)
@@ -22,7 +22,8 @@ class VulnerableComponentsPage(tk.Frame):
         self.vuln_count_entry.insert(0, "3")  # Valeur par défaut
         self.vuln_count_entry.pack(pady=5, padx=10)
 
-        tk.Button(self, text="Analyser", command=self.analyze_components).pack(pady=10)
+        if self.show_button:
+            tk.Button(self, text="Analyser", command=self.analyze_components).pack(pady=10)
 
         # Zone de résultats
         tk.Label(self, text="Résultats de l'analyse :").pack(anchor="w", padx=10, pady=5)

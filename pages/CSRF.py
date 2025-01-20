@@ -3,11 +3,11 @@ import requests
 from tkinter import scrolledtext
 
 class CsrfPage(tk.Frame):
-    def __init__(self, parent, controller, global_url):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
         self.controller = controller
         self.global_url = global_url
-
+        self.show_button = show_button
         tk.Label(self, text="Simulation d'attaque CSRF", font=("Arial", 16)).pack(pady=10)
         tk.Label(self, text="Entrez l'URL de la cible (avec un formulaire vulnérable) :").pack(anchor="w", padx=10)
         self.url_entry = tk.Entry(self, width=50)
@@ -20,8 +20,9 @@ class CsrfPage(tk.Frame):
         tk.Label(self, text="Entrez l'ID de session (copié depuis le navigateur) :").pack(anchor="w", padx=10)
         self.session_id_entry = tk.Entry(self, width=50)
         self.session_id_entry.pack(pady=5, padx=10)
-
-        tk.Button(self, text="Lancer l'attaque CSRF", command=self.simulate_csrf).pack(pady=10)
+        
+        if self.show_button:
+            tk.Button(self, text="Lancer l'attaque CSRF", command=self.simulate_csrf).pack(pady=10)
 
         self.result_area = scrolledtext.ScrolledText(self, wrap=tk.WORD, width=80, height=20)
         self.result_area.pack(padx=10, pady=10)

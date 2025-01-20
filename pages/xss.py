@@ -3,16 +3,18 @@ from tkinter import filedialog, messagebox
 import re
 
 class XssPage(tk.Frame):
-    def __init__(self, parent, controller, global_url):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
         self.global_url = global_url
-
+        self.show_button = show_button
+        self.controller = controller
         self.title_label = tk.Label(self, text="Scanner de Vulnérabilités XSS", font=("Arial", 16))
         self.title_label.pack(pady=20)
 
         # Bouton pour charger un fichier HTML
-        self.load_button = tk.Button(self, text="Charger un fichier HTML", command=self.load_html_file)
-        self.load_button.pack(pady=10)
+        if self.show_button:
+            self.load_button = tk.Button(self, text="Charger un fichier HTML", command=self.load_html_file)
+            self.load_button.pack(pady=10)
 
         # Champ pour afficher les résultats du scan
         self.results_text = tk.Text(self, height=15, width=80, wrap=tk.WORD, state=tk.DISABLED)

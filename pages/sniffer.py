@@ -5,9 +5,10 @@ from threading import Thread, Event
 
 
 class SnifferPage(tk.Frame):
-    def __init__(self, parent, controller, global_url):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
         self.global_url = global_url
+        self.show_button = show_button
         self.stop_event = Event()
         self.sniff_thread = None
         
@@ -30,11 +31,13 @@ class SnifferPage(tk.Frame):
         )
         self.packet_count_dropdown.pack(pady=5)
         
-        self.start_button = tk.Button(self, text="Démarrer le sniffing", command=self.start_sniffing)
-        self.start_button.pack(pady=10)
-        
-        self.stop_button = tk.Button(self, text="Arrêter le sniffing", command=self.stop_sniffing, state="disabled")
-        self.stop_button.pack(pady=10)
+        if self.show_button:
+            self.start_button = tk.Button(self, text="Démarrer le sniffing", command=self.start_sniffing)
+            self.start_button.pack(pady=10)
+
+        if self.show_button:
+            self.stop_button = tk.Button(self, text="Arrêter le sniffing", command=self.stop_sniffing, state="disabled")
+            self.stop_button.pack(pady=10)
         
         self.status_label = tk.Label(self, text="")
         self.status_label.pack(pady=10)

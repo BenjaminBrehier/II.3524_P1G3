@@ -11,6 +11,7 @@ from pages.bufferoverflow import bufferoverflowPage
 from pages.xss import XssPage
 from pages.sniffer import SnifferPage
 from pages.SSL_TLS_Checker import SSLTLSCheckerPage
+from pages.icmpddos import ICMPDdosPage
 import tkinter.messagebox as messagebox
 
 class WizardController:
@@ -32,29 +33,31 @@ class WizardController:
 
         for attack in self.selected_attacks:
             if attack == "DDoS":
-                self.frames[attack] = DdosPage(self.parent, self.controller, self.global_url)
+                self.frames[attack] = DdosPage(self.parent, self.controller, self.global_url, False)
+            elif attack == "ICMP DDoS":
+                self.frames[attack] = ICMPDdosPage(self.parent, self.controller, self.global_url, False)
             elif attack == "Brute Force":
-                self.frames[attack] = bruteforcePage(self.parent, self.controller, self.global_url)
+                self.frames[attack] = bruteforcePage(self.parent, self.controller, self.global_url, False)
             elif attack == "Path Traversal":
-                self.frames[attack] = PathTraversalPage(self.parent, self.controller, self.global_url)
+                self.frames[attack] = PathTraversalPage(self.parent, self.controller, self.global_url, False)
             elif attack == "Vulnerable Components":
-                self.frames[attack] = VulnerableComponentsPage(self.parent, self.controller, self.global_url)
+                self.frames[attack] = VulnerableComponentsPage(self.parent, self.controller, self.global_url, False)
             elif attack == "Nmap":
-                self.frames[attack] = NmapPage(self.parent, self.controller, self.global_url)
+                self.frames[attack] = NmapPage(self.parent, self.controller, self.global_url, False)
             elif attack == "CSRF":
-                self.frames[attack] = CsrfPage(self.parent, self.controller, self.global_url)
+                self.frames[attack] = CsrfPage(self.parent, self.controller, self.global_url, False)
             elif attack == "Subdomain Enumeration":
-                self.frames[attack] = SubdomainEnumerationPage(self.parent, self.controller, self.global_url)
+                self.frames[attack] = SubdomainEnumerationPage(self.parent, self.controller, self.global_url, False)
             elif attack == "Access Control":
-                self.frames[attack] = AccessControlPage(self.parent, self.controller, self.global_url)
+                self.frames[attack] = AccessControlPage(self.parent, self.controller, self.global_url, False)
             elif attack == "Buffer Overflow":
-                self.frames[attack] = bufferoverflowPage(self.parent, self.controller, self.global_url)
+                self.frames[attack] = bufferoverflowPage(self.parent, self.controller, self.global_url, False)
             elif attack == "XSS":
-                self.frames[attack] = XssPage(self.parent, self.controller, self.global_url)
+                self.frames[attack] = XssPage(self.parent, self.controller, self.global_url, False)
             elif attack == "Sniffer":
-                self.frames[attack] = SnifferPage(self.parent, self.controller, self.global_url)
+                self.frames[attack] = SnifferPage(self.parent, self.controller, self.global_url, False)
             elif attack == "SSL/TLS Checker":
-                self.frames[attack] = SSLTLSCheckerPage(self.parent, self.controller, self.global_url)
+                self.frames[attack] = SSLTLSCheckerPage(self.parent, self.controller, self.global_url, False)
 
     def show_current_page(self):
         for frame in self.frames.values():

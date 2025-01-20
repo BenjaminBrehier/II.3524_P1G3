@@ -6,9 +6,10 @@ from urllib.parse import urljoin
 import re
 
 class PrivilegeCheckPage(tk.Frame):
-    def __init__(self, parent, controller, global_url):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
         self.global_url = global_url
+        self.show_button = show_button
 
         self.controller = controller
         tk.Label(self, text="Vérification des privilèges des endpoints", font=("Arial", 16)).pack(pady=10)
@@ -16,7 +17,8 @@ class PrivilegeCheckPage(tk.Frame):
         self.url_entry = tk.Entry(self, width=50)
         self.url_entry.pack(pady=5, padx=10)
         self.url_entry.insert(0, self.global_url)
-        tk.Button(self, text="Analyser", command=self.analyze_endpoints).pack(pady=10)
+        if self.show_button:
+            tk.Button(self, text="Analyser", command=self.analyze_endpoints).pack(pady=10)
 
         # Zone de résultats
         tk.Label(self, text="Résultats de l'analyse :").pack(anchor="w", padx=10, pady=5)

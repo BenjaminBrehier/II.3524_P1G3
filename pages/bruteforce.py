@@ -5,10 +5,11 @@ import requests
 import threading
 
 class bruteforcePage(tk.Frame):
-    def __init__(self, parent, controller, global_url):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
         self.controller = controller
         self.global_url = global_url
+        self.show_button = show_button
 
         # Titre de la page
         self.title_label = tk.Label(self, text="Brute Force Login Attack", font=("Arial", 16))
@@ -53,12 +54,14 @@ class bruteforcePage(tk.Frame):
         self.password_select_button.pack(pady=5)
 
         # Bouton pour démarrer l'attaque
-        self.start_button = tk.Button(self, text="Lancer l'attaque", command=self.start_attack)
-        self.start_button.pack(pady=10)
+        if self.show_button:
+            self.start_button = tk.Button(self, text="Lancer l'attaque", command=self.start_attack)
+            self.start_button.pack(pady=10)
 
         # Bouton "Stop" initialement désactivé
-        self.stop_button = tk.Button(self, text="Arrêter l'attaque", command=self.stop_attack, state=tk.DISABLED)
-        self.stop_button.pack(pady=10)
+        if self.show_button:
+            self.stop_button = tk.Button(self, text="Arrêter l'attaque", command=self.stop_attack, state=tk.DISABLED)
+            self.stop_button.pack(pady=10)
 
         # Label pour afficher le statut
         self.status_label = tk.Label(self, text="", font=("Arial", 12))

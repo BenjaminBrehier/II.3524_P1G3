@@ -4,9 +4,11 @@ import requests
 import urllib.parse
 
 class SQLiPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
         self.controller = controller
+        self.global_url = global_url
+        self.show_button = show_button
 
         # Titre
         self.title_label = tk.Label(self, text="SQL Injection Attack", font=("Arial", 16))
@@ -49,8 +51,9 @@ class SQLiPage(tk.Frame):
         self.headers_entry.pack(pady=5)
 
         # Bouton pour lancer l'attaque
-        self.start_button = tk.Button(self, text="Lancer l'attaque SQLi", command=self.start_attack)
-        self.start_button.pack(pady=10)
+        if self.show_button:
+            self.start_button = tk.Button(self, text="Lancer l'attaque SQLi", command=self.start_attack)
+            self.start_button.pack(pady=10)
 
         # Label pour afficher le statut
         self.status_label = tk.Label(self, text="", font=("Arial", 12))

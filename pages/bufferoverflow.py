@@ -4,10 +4,11 @@ import requests
 
 
 class bufferoverflowPage(tk.Frame):
-    def __init__(self, parent, controller, global_url):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
         self.controller = controller
         self.global_url = global_url
+        self.show_button = show_button
 
         # Titre de la page
         self.title_label = tk.Label(self, text="Buffer Overflow Simulation", font=("Arial", 16))
@@ -26,8 +27,9 @@ class bufferoverflowPage(tk.Frame):
         self.buffer_size_slider.pack(pady=5)
 
         # Bouton pour démarrer l'attaque
-        self.start_button = tk.Button(self, text="Lancer l'attaque", command=self.start_attack)
-        self.start_button.pack(pady=10)
+        if self.show_button:
+            self.start_button = tk.Button(self, text="Lancer l'attaque", command=self.start_attack)
+            self.start_button.pack(pady=10)
 
         # Champ pour afficher les résultats
         self.result_output = tk.Text(self, height=10, width=60, wrap=tk.WORD, state=tk.DISABLED)

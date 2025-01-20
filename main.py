@@ -33,12 +33,12 @@ class App(tk.Tk):
                     Page = getattr(module, attr)
                     if isinstance(Page, type) and issubclass(Page, tk.Frame) and Page is not WizardPage:
                         page_name = Page.__name__
-                        frame = Page(self.container, self, "")
+                        frame = Page(self.container, self, "", True)
                         self.frames[page_name] = frame
                         frame.grid(row=0, column=0, sticky="nsew")
         
         # Manually add the AttackSelectionPage
-        attack_selection_page = AttackSelectionPage(self.container, self, "")
+        attack_selection_page = AttackSelectionPage(self.container, self, "", True)
         self.frames["AttackSelectionPage"] = attack_selection_page
         attack_selection_page.grid(row=0, column=0, sticky="nsew")
     

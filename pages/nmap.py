@@ -4,14 +4,14 @@ from threading import Thread, Event, Lock
 from urllib.parse import urlparse
 
 class NmapPage(tk.Frame):
-    def __init__(self, parent, controller, global_url):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
         self.global_url = global_url
         self.stop_event = Event()  # Event to stop the scan
         self.lock = Lock()  # Lock to synchronize access to shared resources
         self.open_ports = []  # Shared list to store open ports
         self.active_threads = 0  # Counter for active threads
-
+        self.show_button = show_button
         labelNmap = tk.Label(self, text="Page Nmap", font=("Arial", 16))
         labelNmap.pack(pady=20)
 
@@ -34,11 +34,13 @@ class NmapPage(tk.Frame):
         self.threads_entry.insert(0, "1")  
         self.threads_entry.pack(pady=5)
 
-        self.start_button = tk.Button(self, text="Lancer le scan Nmap", command=self.start_scan)
-        self.start_button.pack(pady=10)
+        if self.show_button:
+            self.start_button = tk.Button(self, text="Lancer le scan Nmap", command=self.start_scan)
+            self.start_button.pack(pady=10)
 
-        self.stop_button = tk.Button(self, text="Stopper le scan", command=self.stop_scan, state="disabled")
-        self.stop_button.pack(pady=10)
+        if self.show_button:
+            self.stop_button = tk.Button(self, text="Stopper le scan", command=self.stop_scan, state="disabled")
+            self.stop_button.pack(pady=10)
 
         self.status_label = tk.Label(self, text="")
         self.status_label.pack(pady=10)
@@ -62,8 +64,9 @@ class NmapPage(tk.Frame):
 
         self.status_label.config(text="Lancement du scan...")
         self.stop_event.clear()
-        self.stop_button.config(state="normal") 
-        self.start_button.config(state="disabled")  
+        if self.show_button:
+            self.stop_button.config(state="normal") 
+            self.start_button.config(state="disabled")  
 
         # Reset shared resources
         self.open_ports = []
@@ -124,8 +127,9 @@ class NmapPage(tk.Frame):
         self.reset_buttons()
 
     def reset_buttons(self):
-        self.start_button.config(state="normal") 
-        self.stop_button.config(state="disabled") 
+        if self.show_button:
+            self.start_button.config(state="normal") 
+            self.stop_button.config(state="disabled") 
 
     def show_results(self, hostname, results):
         results_text = f"URL cible : {hostname}\n\nRésultats du scan :\n{results}"

@@ -4,9 +4,10 @@ import requests
 from threading import Thread
 
 class PathTraversalPage(tk.Frame):
-    def __init__(self, parent, controller, global_url):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
         self.global_url = global_url
+        self.show_button = show_button
         self.results_displayed = False #Nouveau drapeau pour éviter plusieurs fenêtres
 
         label = tk.Label(self, text="Page Traversée de Répertoires", font=("Arial", 16))
@@ -29,8 +30,9 @@ class PathTraversalPage(tk.Frame):
         self.patterns_entry.insert(0, "../, ..\\, ..%2f, ..%5c, ..%c0%af, ..%u2216, ..%252e%252e%255c")#En ajouter si nécessaire
         self.patterns_entry.pack(pady=5)
 
-        self.start_button = tk.Button(self, text="Lancer l'attaque", command=self.start_attack)
-        self.start_button.pack(pady=10)
+        if self.show_button:
+            self.start_button = tk.Button(self, text="Lancer l'attaque", command=self.start_attack)
+            self.start_button.pack(pady=10)
 
         self.status_label = tk.Label(self, text="")
         self.status_label.pack(pady=10)
@@ -45,7 +47,8 @@ class PathTraversalPage(tk.Frame):
             return
 
         self.status_label.config(text="Lancement en cours...")
-        self.start_button.config(state="disabled") #Blocage du bouton "lancer l'attaque" pendant l'attaque
+        if self.show_button:
+            self.start_button.config(state="disabled") #Blocage du bouton "lancer l'attaque" pendant l'attaque
 
         # Lance l'attaque dans un thread pour ne pas bloquer l'interface
         thread = Thread(target=self.perform_attack, args=(url, files, patterns))
@@ -97,7 +100,8 @@ class PathTraversalPage(tk.Frame):
                         file.write(f"[ERROR] {target_url} - {e}\n")
 
         self.show_results(results)
-        self.start_button.config(state="normal") # Réactive le bouton après l'attaque
+        if self.show_button:
+            self.start_button.config(state="normal") # Réactive le bouton après l'attaque
         self.status_label.config(text="Attaque terminée.")
 
     def show_results(self, results):

@@ -2,10 +2,11 @@ import tkinter as tk
 import requests
 
 class SubdomainEnumerationPage(tk.Frame):
-    def __init__(self, parent, controller, global_url):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
         self.global_url = global_url
         self.controller = controller
+        self.show_button = show_button
         self.create_widgets()
 
     def create_widgets(self):
@@ -19,7 +20,8 @@ class SubdomainEnumerationPage(tk.Frame):
         self.result_text = tk.Text(self, height=15, width=80)
         self.result_text.pack(pady=10)
 
-        tk.Button(self, text="Démarrer l'analyse", command=self.enumerate_subdomains).pack(pady=5)
+        if self.show_button:
+            tk.Button(self, text="Démarrer l'analyse", command=self.enumerate_subdomains).pack(pady=5)
 
     def enumerate_subdomains(self):
         """Effectue l'énumération des sous-domaines."""

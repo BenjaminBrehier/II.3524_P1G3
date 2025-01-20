@@ -6,8 +6,11 @@ from threading import Thread, Event
 import time
 
 class ICMPDdosPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
+        self.controller = controller
+        self.global_url = global_url
+        self.show_button = show_button
         self.stop_event = Event()
         self.attack_start_time = None
         self.attack_end_time = None 
@@ -36,11 +39,13 @@ class ICMPDdosPage(tk.Frame):
         self.threadsEntry.insert(0, "1")  # Nb threads par défaut
         self.threadsEntry.pack(pady=5)
         
-        self.start_button = tk.Button(self, text="Lancer l'attaque DDoS", command=self.start_attack)
-        self.start_button.pack(pady=10)
+        if self.show_button:
+            self.start_button = tk.Button(self, text="Lancer l'attaque DDoS", command=self.start_attack)
+            self.start_button.pack(pady=10)
         
-        self.stop_button = tk.Button(self, text="Stopper l'attaque", command=self.stop_attack, state="disabled")
-        self.stop_button.pack(pady=10)
+        if self.show_button:
+            self.stop_button = tk.Button(self, text="Stopper l'attaque", command=self.stop_attack, state="disabled")
+            self.stop_button.pack(pady=10)
         
         self.status_label = tk.Label(self, text="")
         self.status_label.pack(pady=10)
@@ -115,3 +120,10 @@ class ICMPDdosPage(tk.Frame):
             tk.Label(results_window, text=f"Durée totale : {duration:.2f} secondes").pack()
             tk.Label(results_window, text=f"Nombre total de requêtes : {self.completed_requests}").pack()
             tk.Label(results_window, text=f"Requêtes par seconde : {self.completed_requests/duration:.2f}").pack()
+
+            with open("report.md", "a", encoding="utf-8") as file:
+                file.write(f"## Analyse de l'attaque ICMP DDoS\n")
+                file.write(f"Durée totale : {duration:.2f} secondes\n")
+                file.write(f"Nombre total de requêtes : {self.completed_requests}\n")
+                file.write(f"Requêtes par seconde : {self.completed_requests/duration:.2f}\n")
+                file.write("\n\n")

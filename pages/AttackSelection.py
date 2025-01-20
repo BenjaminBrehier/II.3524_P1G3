@@ -2,10 +2,11 @@ import tkinter as tk
 from tkinter import messagebox, scrolledtext
 
 class AttackSelectionPage(tk.Frame):
-    def __init__(self, parent, controller, global_url):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
         self.controller = controller
         self.global_url = global_url
+        self.show_button = show_button
 
         # Title
         tk.Label(self, text="Sélection des Attaques", font=("Arial", 16)).pack(pady=20)
@@ -18,6 +19,7 @@ class AttackSelectionPage(tk.Frame):
         # Checkboxes for each attack
         self.attacks = {
             "DDoS": tk.BooleanVar(),
+            "ICMP DDoS": tk.BooleanVar(),
             # "Brute Force": tk.BooleanVar(),
             "Path Traversal": tk.BooleanVar(),
             # "XSS": tk.BooleanVar(),

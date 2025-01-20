@@ -10,11 +10,11 @@ import tkinter as tk
 from tkinter import messagebox
 
 class AccessControlPage(tk.Frame):
-    def __init__(self, parent, controller, global_url):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
         self.controller = controller
         self.global_url = global_url
-
+        self.show_button = show_button
         # Titre de la page
         tk.Label(self, text="Access Control Scanner", font=("Arial", 16)).pack(pady=20)
 
@@ -24,8 +24,9 @@ class AccessControlPage(tk.Frame):
         self.url_entry.pack(pady=5)
         self.url_entry.insert(0, self.global_url)
         # Bouton pour scanner les routes
-        self.scan_button = tk.Button(self, text="Scanner les routes", command=self.start_scan)
-        self.scan_button.pack(pady=10)
+        if self.show_button:
+            self.scan_button = tk.Button(self, text="Scanner les routes", command=self.start_scan)
+            self.scan_button.pack(pady=10)
 
         # Zone pour afficher les résultats avec scrollbar
         self.result_frame = tk.Frame(self)

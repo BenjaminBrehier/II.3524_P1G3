@@ -6,9 +6,10 @@ import datetime
 
 
 class SSLTLSCheckerPage(tk.Frame):
-    def __init__(self, parent, controller, global_url):
+    def __init__(self, parent, controller, global_url, show_button):
         super().__init__(parent)
         self.global_url = global_url
+        self.show_button = show_button
 
         label = tk.Label(self, text="Page SSL/TLS Checker", font=("Arial", 16))
         label.pack(pady=20)
@@ -17,8 +18,9 @@ class SSLTLSCheckerPage(tk.Frame):
         self.url_entry = tk.Entry(self, width=40)
         self.url_entry.pack(pady=10)
         self.url_entry.insert(0, self.global_url)
-        self.check_button = tk.Button(self, text="Vérifier la sécurité SSL/TLS", command=self.check_ssl)
-        self.check_button.pack(pady=10)
+        if self.show_button:
+            self.check_button = tk.Button(self, text="Vérifier la sécurité SSL/TLS", command=self.check_ssl)
+            self.check_button.pack(pady=10)
 
         self.status_label = tk.Label(self, text="", wraplength=600, justify="left")
         self.status_label.pack(pady=10)

@@ -1,9 +1,5 @@
 # Rapport des Attaques
 
-## Analyse de l'attaque CSRF :
-Succès : L'attaque CSRF a été exécutée.
-
-
 ## Analyse de l'attaque Nmap :
 URL cible : localhost
 
@@ -13,7 +9,7 @@ Ports ouverts : 80
 ## Analyse de l'attaque Buffer Overflow pour : http://localhost/csrf.php
 Payload envoyé (100 octets).
 Réponse du serveur : 200
-ID de session : 2mjpq27uph6cjslsqmop4je8po<br>Utilisateur  introuvable.
+ID de session : r54upaqk5cdolg3ucnkjtkk09g<br>Utilisateur  introuvable.
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisat...
@@ -72,7 +68,7 @@ URL cible : http://localhost/csrf.php
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : s7q2ge660f9fkr1c03dh22ud4b<br>
+ID de session : u85vvprk53b5ledi2rqr0vopsg<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -98,7 +94,7 @@ ID de session : s7q2ge660f9fkr1c03dh22ud4b<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : g5cgqm75qaulsq9j840crbjt2b<br>
+ID de session : 87b5i8ni2630vm5825ep3ku5l1<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -124,7 +120,7 @@ ID de session : g5cgqm75qaulsq9j840crbjt2b<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : lb7jlnv05tj9p5nqmd0jmiih08<br>
+ID de session : 5mq9rot7qlvri75nf7uukev05o<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -150,7 +146,7 @@ ID de session : lb7jlnv05tj9p5nqmd0jmiih08<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : 1t7go9bb0ukou2vber206lh8tv<br>
+ID de session : r802gqltgo9pjrukj552h48qpa<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -176,7 +172,7 @@ ID de session : 1t7go9bb0ukou2vber206lh8tv<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : clth47seoutjkb8b9gfk9ekteh<br>
+ID de session : kfthu3mbkvhqukt1hl8308p4ba<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -202,7 +198,7 @@ ID de session : clth47seoutjkb8b9gfk9ekteh<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : 6c5hf5e568u5hfni3k39ol4tf3<br>
+ID de session : ljsmh28k3ibdurscb0f221u8b2<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -228,7 +224,7 @@ ID de session : 6c5hf5e568u5hfni3k39ol4tf3<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : 4dbst3n77qpgg1haom8bhj8a4j<br>
+ID de session : kiqjmfa7s893kpaiba2b5fkgo5<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -254,7 +250,7 @@ ID de session : 4dbst3n77qpgg1haom8bhj8a4j<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : j2a4cppah7k645k71hln3v2av8<br>
+ID de session : r16hjvh6big5l9lm8aahrq2hcp<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -280,7 +276,7 @@ ID de session : j2a4cppah7k645k71hln3v2av8<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : dreq2hsfdb1d5ilpssf980sn49<br>
+ID de session : hes9ou363flo4n6a1vak5rlcm2<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -306,7 +302,7 @@ ID de session : dreq2hsfdb1d5ilpssf980sn49<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : sm3b2vtnhna2falsicqud5m8vp<br>
+ID de session : 5d4kboc2eqp30k21m1domju1o3<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -332,7 +328,7 @@ ID de session : sm3b2vtnhna2falsicqud5m8vp<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : qrnummdrskiv4hltn9t4da2iv0<br>
+ID de session : 0db5oa9ai48v2tbjj15kn1s5rs<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -358,7 +354,7 @@ ID de session : qrnummdrskiv4hltn9t4da2iv0<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : 5068rhe7jq3ibj8cop5j2quhc0<br>
+ID de session : 7hftig529709gqtrfj00fff618<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -384,7 +380,7 @@ ID de session : 5068rhe7jq3ibj8cop5j2quhc0<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : sj0dk0nns6r7d01ae5vvlcn6om<br>
+ID de session : n8bn3viodtiim0gmaiq53camfb<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -410,7 +406,7 @@ ID de session : sj0dk0nns6r7d01ae5vvlcn6om<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : jq882hctib49ipl0jobgs5d9e2<br>
+ID de session : gr446t2mn5900r43lu7hb9hfgb<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -436,7 +432,7 @@ ID de session : jq882hctib49ipl0jobgs5d9e2<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : jh8e8bsp50ese60iahm7u69h2f<br>
+ID de session : k7g3kjvsq6377f70dv1r70f62b<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -462,7 +458,7 @@ ID de session : jh8e8bsp50ese60iahm7u69h2f<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : 5ir2bb2v1e4bafe356tucgf05a<br>
+ID de session : fujpgrsnijrad9k59u8f6qlmn3<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -488,7 +484,7 @@ ID de session : 5ir2bb2v1e4bafe356tucgf05a<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : aoute4rcc5pgoj172bedbe646c<br>
+ID de session : c64v8l2u447ec0m6fbiedhhk6f<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -514,7 +510,7 @@ ID de session : aoute4rcc5pgoj172bedbe646c<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : gt284ej18mufvdj55154sndat3<br>
+ID de session : vk6r8jqje83prul2i4rsqjipjr<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -540,7 +536,7 @@ ID de session : gt284ej18mufvdj55154sndat3<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : 97ojs22f1bhsufagrhac80hft6<br>
+ID de session : 2g62bghgv9vh21je63j9u91ttq<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -566,7 +562,7 @@ ID de session : 97ojs22f1bhsufagrhac80hft6<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : mo0l39i68ev7k60h7i1cae6rib<br>
+ID de session : 3s8t23s298dps7f04g4oop8l8o<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -592,7 +588,7 @@ ID de session : mo0l39i68ev7k60h7i1cae6rib<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : ka5o3u1rv4aktqefm3kgbm47mr<br>
+ID de session : p0n051ut9fq5eac698q73d59rt<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -618,7 +614,7 @@ ID de session : ka5o3u1rv4aktqefm3kgbm47mr<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : 9a9gjquejmtfgmmh0fgno04kbu<br>
+ID de session : bkd27i0qucupbmk4eus29n8l42<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -644,7 +640,7 @@ ID de session : 9a9gjquejmtfgmmh0fgno04kbu<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : lod2a25989ajgpo1g9eed9ltcr<br>
+ID de session : bmpoi9s7d42020hpnf1kmlj41s<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -670,7 +666,7 @@ ID de session : lod2a25989ajgpo1g9eed9ltcr<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : v7593shlkr11tvsa09e9ssf1vb<br>
+ID de session : v06hmodqrjp2iod81l1dja8r7q<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -696,7 +692,7 @@ ID de session : v7593shlkr11tvsa09e9ssf1vb<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : 9vl3o3gcs0h9s046lf4tug3d4g<br>
+ID de session : 0a6ht9fgda4d8d93mpejkst19e<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -722,7 +718,7 @@ ID de session : 9vl3o3gcs0h9s046lf4tug3d4g<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : 6el27dosph7i24q5liu6d81v51<br>
+ID de session : rh3r2svjulk5kdkhpd2ql6a5pa<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -748,7 +744,7 @@ ID de session : 6el27dosph7i24q5liu6d81v51<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : 20tfq4j1146uhbt9fdrgimisrp<br>
+ID de session : j79tu75mr846rib9t9cap1skgd<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -774,7 +770,7 @@ ID de session : 20tfq4j1146uhbt9fdrgimisrp<br>
 <summary>Voir le contenu extrait</summary>
 
 ```
-ID de session : 9dfha598on2hlrtq3i151nc6j0<br>
+ID de session : fi436lg2cqr6q2pfqqqubp79pv<br>
 <!-- Formulaire vulnérable -->
 <form method="POST" action="">
     <input type="text" name="username" placeholder="Nom d'utilisateur">
@@ -798,9 +794,15 @@ ID de session : 9dfha598on2hlrtq3i151nc6j0<br>
 ## Analyse de l'attaque DDoS
 - URL cible : http://localhost/csrf.php
 - Temps initial estimé : 10.00 secondes
-- Temps réel de l'attaque : 10.33 secondes
+- Temps réel de l'attaque : 10.35 secondes
 - Nombre de requêtes sélectionnées : 100
 - Requêtes effectuées : 100
 - Intervalle entre les requêtes : 0.10 secondes
+
+
+## Analyse de l'attaque ICMP DDoS
+Durée totale : 12.33 secondes
+Nombre total de requêtes : 100
+Requêtes par seconde : 8.11
 
 
