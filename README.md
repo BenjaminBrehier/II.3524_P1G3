@@ -2,6 +2,8 @@
 
 Bienvenue dans l'outil de hacking. Cet outil est conçu pour des tests de sécurité uniquement. Utilisez-le de manière responsable et uniquement sur des systèmes pour lesquels vous avez l'autorisation.
 
+Le fichier report.md est un fichier de log qui contient les résultats de l'outil après utilisation d'attaques multiples.
+
 ## Installation
 
 Pour installer les dépendances nécessaires, exécutez la commande suivante :
