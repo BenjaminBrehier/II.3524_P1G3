@@ -5,9 +5,10 @@ import requests
 import threading
 
 class bfPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url):
         super().__init__(parent)
         self.controller = controller
+        self.global_url = global_url
 
         # Titre de la page
         self.title_label = tk.Label(self, text="Brute Force Login Attack", font=("Arial", 16))
@@ -18,7 +19,7 @@ class bfPage(tk.Frame):
         self.url_label.pack(pady=5)
         self.url_entry = tk.Entry(self, width=40)
         self.url_entry.pack(pady=5)
-
+        self.url_entry.insert(0, self.global_url)
         # Fichiers des logins
         self.username_label = tk.Label(self, text="Choisir un fichier des Logins:")
         self.username_label.pack(pady=5)

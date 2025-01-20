@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test XSS</title>
+</head>
+<body>
+    <h1>Test de vulnérabilité XSS</h1>
+    <form action="" method="get">
+        <label for="name">Nom:</label>
+        <input type="text" id="name" name="name">
+        <input type="submit" value="Soumettre">
+    </form>
+    <p>Bonjour, <span id="greeting"></span>!</p>
+
+    <script>
+        // Injection non sécurisée du paramètre 'name' dans la page
+        var urlParams = new URLSearchParams(window.location.search);
+        var name = urlParams.get('name');
+        document.getElementById('greeting').innerHTML = name;
+    </script>
+</body>
+</html>

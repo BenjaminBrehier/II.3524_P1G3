@@ -5,9 +5,10 @@ import requests
 import threading
 
 class bruteforcePage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url):
         super().__init__(parent)
         self.controller = controller
+        self.global_url = global_url
 
         # Titre de la page
         self.title_label = tk.Label(self, text="Brute Force Login Attack", font=("Arial", 16))
@@ -18,7 +19,7 @@ class bruteforcePage(tk.Frame):
         self.url_label.pack(pady=5)
         self.url_entry = tk.Entry(self, width=40)
         self.url_entry.pack(pady=5)
-
+        self.url_entry.insert(0, self.global_url)
         # Fichiers des logins
         self.username_label = tk.Label(self, text="Choisir un fichier des Logins:")
         self.username_label.pack(pady=5)
@@ -163,8 +164,8 @@ class bruteforcePage(tk.Frame):
         self.stop_requested = False
 
         # Lancer l'attaque dans un thread séparé
-        attack_thread = threading.Thread(target=self.run_attack, args=(url, logins, passwords, valid_combinations))
-        attack_thread.start()
+        self.attack_thread = threading.Thread(target=self.run_attack, args=(url, logins, passwords, valid_combinations))
+        self.attack_thread.start()
 
     def run_attack(self, url, logins, passwords, valid_combinations):
         """Effectuer l'attaque brute force dans un thread séparé."""
@@ -183,14 +184,22 @@ class bruteforcePage(tk.Frame):
                     self.update_test_output(f"Réussi : {login} / {password}\n")
 
         # Afficher les résultats finaux
+        with open("report.md", "a", encoding="utf-8") as file:
+            file.write("## Analyse de l'attaque brute force :\n")
         self.is_attack_running = False
         if valid_combinations:
             results = "\n".join(valid_combinations)
             self.status_label.config(text=f"Logins trouvés :\n{results}")
             messagebox.showinfo("Succès", f"Logins valides trouvés :\n{results}")
+            with open("report.md", "a", encoding="utf-8") as file:
+                file.write(f"### Logins valides trouvés :\n{results}\n")
+                file.write("\n\n")
         else:
             self.status_label.config(text="Aucun credentiel trouvé.")
             messagebox.showinfo("Résultat", "Aucun credentiel trouvé.")
+            with open("report.md", "a", encoding="utf-8") as file:
+                file.write("### Aucun credentiel trouvé.\n")
+                file.write("\n\n")
         
         # Réactiver le bouton Start et désactiver le bouton Stop
         self.start_button.config(state=tk.NORMAL)
@@ -222,3 +231,6 @@ class bruteforcePage(tk.Frame):
         self.update_test_output("Attaque arrêtée.\n")
         self.start_button.config(state=tk.NORMAL)
         self.stop_button.config(state=tk.DISABLED)
+        if self.attack_thread.is_alive():
+            self.attack_thread.join()
+        self.is_attack_running = False

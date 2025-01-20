@@ -4,9 +4,10 @@ import requests
 
 
 class bufferoverflowPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url):
         super().__init__(parent)
         self.controller = controller
+        self.global_url = global_url
 
         # Titre de la page
         self.title_label = tk.Label(self, text="Buffer Overflow Simulation", font=("Arial", 16))
@@ -17,7 +18,7 @@ class bufferoverflowPage(tk.Frame):
         self.target_label.pack(pady=5)
         self.target_entry = tk.Entry(self, width=50)
         self.target_entry.pack(pady=5)
-
+        self.target_entry.insert(0, self.global_url)
         # Slider pour la taille du buffer
         self.buffer_label = tk.Label(self, text="Taille du buffer à envoyer :")
         self.buffer_label.pack(pady=5)
@@ -49,9 +50,17 @@ class bufferoverflowPage(tk.Frame):
             response = requests.post(target, data={'input': payload})
             self.update_result_output(f"Payload envoyé ({buffer_size} octets).\n")
             self.update_result_output(f"Réponse du serveur : {response.status_code}\n{response.text[:200]}...\n")
+            with open("report.md", "a", encoding="utf-8") as file:
+                file.write(f"## Analyse de l'attaque Buffer Overflow pour : {target}\n")
+                file.write(f"Payload envoyé ({buffer_size} octets).\n")
+                file.write(f"Réponse du serveur : {response.status_code}\n{response.text[:200]}...\n")
+                file.write("\n\n")
         except requests.exceptions.RequestException as e:
             self.update_result_output(f"Erreur de connexion : {e}\n")
-
+            with open("report.md", "a", encoding="utf-8") as file:
+                file.write(f"## Analyse de l'attaque Buffer Overflow pour : {target}\n")
+                file.write(f"Erreur de connexion : {e}\n")
+                file.write("\n\n")
     def update_result_output(self, text):
         """Met à jour l'affichage des résultats dans le Text widget."""
         self.result_output.config(state=tk.NORMAL)

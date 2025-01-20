@@ -2,8 +2,9 @@ import tkinter as tk
 import requests
 
 class SubdomainEnumerationPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url):
         super().__init__(parent)
+        self.global_url = global_url
         self.controller = controller
         self.create_widgets()
 
@@ -14,7 +15,7 @@ class SubdomainEnumerationPage(tk.Frame):
         tk.Label(self, text="Entrez l'URL cible :").pack(pady=5)
         self.url_entry = tk.Entry(self, width=50)
         self.url_entry.pack(pady=5)
-
+        self.url_entry.insert(0, self.global_url)
         self.result_text = tk.Text(self, height=15, width=80)
         self.result_text.pack(pady=10)
 
@@ -46,5 +47,13 @@ class SubdomainEnumerationPage(tk.Frame):
         self.result_text.insert("end", "\nAnalyse terminée.\n")
         if found_subdomains:
             self.result_text.insert("end", f"Sous-domaines trouvés : {', '.join(found_subdomains)}\n")
+            with open("report.md", "a", encoding="utf-8") as file:
+                file.write("## Analyse de l'attaque Subdomain Enumeration :\n")
+                for subdomain in found_subdomains:
+                    file.write(f"- {subdomain}\n")
         else:
             self.result_text.insert("end", "Aucun sous-domaine trouvé.\n")
+
+    def start_attack(self):
+        """Method to start the analysis externally."""
+        self.enumerate_subdomains()

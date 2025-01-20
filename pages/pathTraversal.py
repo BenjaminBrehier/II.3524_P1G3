@@ -4,8 +4,9 @@ import requests
 from threading import Thread
 
 class PathTraversalPage(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, global_url):
         super().__init__(parent)
+        self.global_url = global_url
         self.results_displayed = False #Nouveau drapeau pour éviter plusieurs fenêtres
 
         label = tk.Label(self, text="Page Traversée de Répertoires", font=("Arial", 16))
@@ -14,7 +15,7 @@ class PathTraversalPage(tk.Frame):
         tk.Label(self, text="URL cible :").pack(pady=5)
         self.url_entry = tk.Entry(self, width=50)
         self.url_entry.pack(pady=5)
-
+        self.url_entry.insert(0, self.global_url)
         tk.Label(self, text="Fichiers cibles (séparés par des virgules) :").pack(pady=5)
         self.files_entry = tk.Entry(self, width=50)
         self.files_entry.insert(
@@ -53,6 +54,15 @@ class PathTraversalPage(tk.Frame):
 
     def perform_attack(self, url, files, patterns):
         results = []
+        with open("report.md", "a", encoding="utf-8") as file:
+            file.write("## Path Traversal\n\n")
+            file.write(f"URL cible : {url}\n")
+            for f in files:
+                file.write(f"- Fichier cible : {f}\n")
+            for p in patterns:
+                file.write(f"- Pattern de traversée : {p}\n")
+            file.write("\n")
+
         for file_path in files:
             for pattern in patterns:
                 target_url = f"{url}?file={pattern}{file_path.strip()}"
@@ -66,14 +76,25 @@ class PathTraversalPage(tk.Frame):
                     if response.status_code == 200:
                         extracted_content = response.text[:10000]
                         results.append(f"[SUCCESS] Fichier trouvé : {target_url}\nContenu extrait :\n{extracted_content}\n")
+                        with open("report.md", "a", encoding="utf-8") as file:
+                            file.write(f"[SUCCESS] Fichier trouvé : {target_url}\n")
+                            file.write("<details>\n<summary>Voir le contenu extrait</summary>\n\n")
+                            file.write(f"```\n{extracted_content}\n```\n")
+                            file.write("</details>\n\n")
 
                         # Étape 3 : Détecte des réponses génériques (diagnostic en gros)
                         if "Error" in extracted_content or "Not Found" in extracted_content:
                             results.append(f"[NOTE] Réponse générique ou erreur détectée pour {target_url}.\n")
+                            with open("report.md", "a", encoding="utf-8") as file:
+                                file.write(f"[NOTE] Réponse générique ou erreur détectée pour {target_url}.\n")
                     else:
                         results.append(f"[FAIL] {target_url} (Code : {response.status_code})\n")
+                        with open("report.md", "a", encoding="utf-8") as file:
+                            file.write(f"[FAIL] {target_url} (Code : {response.status_code})\n")
                 except Exception as e:
                     results.append(f"[ERROR] {target_url} - {e}\n")
+                    with open("report.md", "a", encoding="utf-8") as file:
+                        file.write(f"[ERROR] {target_url} - {e}\n")
 
         self.show_results(results)
         self.start_button.config(state="normal") # Réactive le bouton après l'attaque
