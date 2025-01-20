@@ -27,7 +27,7 @@ class VulnerableComponentsPage(tk.Frame):
 
         # Zone de résultats
         tk.Label(self, text="Résultats de l'analyse :").pack(anchor="w", padx=10, pady=5)
-        self.result_area = scrolledtext.ScrolledText(self, wrap=tk.WORD, width=80, height=20)
+        self.result_area = scrolledtext.ScrolledText(self, wrap=tk.WORD, width=80, height=20, state=tk.DISABLED)
         self.result_area.pack(padx=10, pady=10)
 
     def analyze_components(self):

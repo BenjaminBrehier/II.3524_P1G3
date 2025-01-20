@@ -24,7 +24,7 @@ class CsrfPage(tk.Frame):
         if self.show_button:
             tk.Button(self, text="Lancer l'attaque CSRF", command=self.simulate_csrf).pack(pady=10)
 
-        self.result_area = scrolledtext.ScrolledText(self, wrap=tk.WORD, width=80, height=20)
+        self.result_area = scrolledtext.ScrolledText(self, wrap=tk.WORD, width=80, height=20, state=tk.DISABLED)
         self.result_area.pack(padx=10, pady=10)
 
     def simulate_csrf(self):

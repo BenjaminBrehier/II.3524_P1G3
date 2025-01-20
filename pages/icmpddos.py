@@ -1,7 +1,6 @@
 from scapy.all import IP, ICMP, send
 import socket
 import tkinter as tk
-from tkinter import Toplevel
 from threading import Thread, Event
 import time
 
@@ -49,6 +48,9 @@ class ICMPDdosPage(tk.Frame):
         
         self.status_label = tk.Label(self, text="")
         self.status_label.pack(pady=10)
+
+        self.results_text = tk.Text(self, height=10, width=50, state=tk.DISABLED)
+        self.results_text.pack(pady=10)
     
     def start_attack(self):
         target = self.target_entry.get()
@@ -108,19 +110,25 @@ class ICMPDdosPage(tk.Frame):
         self.stop_event.set()
         self.attack_end_time = time.time()
         self.status_label.config(text="Attaque terminée")
-        self.stop_button.config(state="disabled")
-        self.start_button.config(state="normal")
+        if self.show_button:
+            self.stop_button.config(state="disabled")
+            self.start_button.config(state="normal")
         self.show_results()
 
     def show_results(self):
         if not self.results_displayed:
             self.results_displayed = True
             duration = self.attack_end_time - self.attack_start_time
-            results_window = Toplevel(self)
-            results_window.title("Résultats de l'attaque")
-            tk.Label(results_window, text=f"Durée totale : {duration:.2f} secondes").pack()
-            tk.Label(results_window, text=f"Nombre total de requêtes : {self.completed_requests}").pack()
-            tk.Label(results_window, text=f"Requêtes par seconde : {self.completed_requests/duration:.2f}").pack()
+            results = (
+                f"Durée totale : {duration:.2f} secondes\n"
+                f"Nombre total de requêtes : {self.completed_requests}\n"
+                f"Requêtes par seconde : {self.completed_requests/duration:.2f}\n"
+            )
+
+            self.results_text.config(state=tk.NORMAL)
+            self.results_text.delete(1.0, tk.END)
+            self.results_text.insert(tk.END, results)
+            self.results_text.config(state=tk.DISABLED)
 
             with open("report.md", "a", encoding="utf-8") as file:
                 file.write(f"## Analyse de l'attaque ICMP DDoS\n")

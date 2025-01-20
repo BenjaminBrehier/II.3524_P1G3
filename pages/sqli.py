@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, filedialog, Toplevel
+from tkinter import messagebox, filedialog, Toplevel, scrolledtext
 import requests
 import urllib.parse
 
@@ -19,7 +19,7 @@ class SQLiPage(tk.Frame):
         self.url_label.pack(pady=5)
         self.url_entry = tk.Entry(self, width=60)
         self.url_entry.pack(pady=5)
-
+        self.url_entry.insert(0, self.global_url)
         self.method_label = tk.Label(self, text="Méthode HTTP :")
         self.method_label.pack(pady=5)
         self.method_var = tk.StringVar(value="GET")
@@ -58,6 +58,10 @@ class SQLiPage(tk.Frame):
         # Label pour afficher le statut
         self.status_label = tk.Label(self, text="", font=("Arial", 12))
         self.status_label.pack(pady=10)
+
+        # Textarea pour afficher les résultats
+        self.results_text = scrolledtext.ScrolledText(self, wrap=tk.WORD, width=80, height=20, state=tk.DISABLED)
+        self.results_text.pack(pady=10, padx=10)
 
     def load_payload_file(self):
         """Charge les payloads SQL à partir d'un fichier texte."""
@@ -128,23 +132,28 @@ class SQLiPage(tk.Frame):
         return False
 
     def show_results(self, vulnerabilities):
-        """Affiche une fenêtre avec les résultats."""
-        results_window = Toplevel(self)
-        results_window.title("Résultats du test SQLi")
-        results_window.geometry("400x300")
-
-        results_label = tk.Label(results_window, text="Résultats du test SQLi", font=("Arial", 14))
-        results_label.pack(pady=10)
-
+        """Affiche les résultats dans une textarea."""
         if vulnerabilities:
             result_text = "Vulnérabilités détectées avec les payloads suivants :\n" + "\n".join(vulnerabilities)
         else:
             result_text = "Aucune vulnérabilité détectée."
 
-        results_text = tk.Text(results_window, wrap="word")
-        results_text.insert("1.0", result_text)
-        results_text.config(state="disabled")
-        results_text.pack(expand=True, fill="both", padx=10, pady=10)
+        self.results_text.config(state=tk.NORMAL)
+        self.results_text.delete(1.0, tk.END)
+        self.results_text.insert(tk.END, result_text)
+        self.results_text.config(state=tk.DISABLED)
 
-        close_button = tk.Button(results_window, text="Fermer", command=results_window.destroy)
-        close_button.pack(pady=10)
+        with open("report.md", "a", encoding="utf-8") as file:
+            file.write("## SQL Injection\n")
+            file.write(f"- URL cible : {self.global_url}\n")
+            file.write(f"- Paramètre : {self.param_entry.get()}\n")
+            file.write(f"- Méthode : {self.method_var.get()}\n")
+            file.write(f"- Payloads : {self.payload_entry.get()}\n")
+            file.write(f"- Headers : {self.headers_entry.get()}\n")
+            file.write(f"- Résultats : \n")
+            if vulnerabilities:
+                for payload in vulnerabilities:
+                    file.write(f"    - {payload}\n")
+            else:
+                file.write("    - Aucune vulnérabilité détectée.\n")
+            file.write("\n\n")

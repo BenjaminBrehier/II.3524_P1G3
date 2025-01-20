@@ -17,7 +17,7 @@ class SubdomainEnumerationPage(tk.Frame):
         self.url_entry = tk.Entry(self, width=50)
         self.url_entry.pack(pady=5)
         self.url_entry.insert(0, self.global_url)
-        self.result_text = tk.Text(self, height=15, width=80)
+        self.result_text = tk.Text(self, height=15, width=80, state=tk.DISABLED)
         self.result_text.pack(pady=10)
 
         if self.show_button:

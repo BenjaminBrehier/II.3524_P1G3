@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Toplevel, scrolledtext
+from tkinter import scrolledtext
 import requests
 from threading import Thread
 
@@ -36,6 +36,9 @@ class PathTraversalPage(tk.Frame):
 
         self.status_label = tk.Label(self, text="")
         self.status_label.pack(pady=10)
+
+        self.results_text = scrolledtext.ScrolledText(self, wrap=tk.WORD, width=80, height=20, state=tk.DISABLED)
+        self.results_text.pack(pady=10, padx=10)
 
     def start_attack(self):
         url = self.url_entry.get()
@@ -109,20 +112,10 @@ class PathTraversalPage(tk.Frame):
             return #Empêche plusieurs affichages en simultanés
 
         self.results_displayed = True
-        results_window = Toplevel(self)
-        results_window.title("Résultats de l'attaque")
-        results_window.geometry("800x600")
-
-        results_label = tk.Label(results_window, text="Résumé des résultats", font=("Arial", 14))
-        results_label.pack(pady=10)
-
-        results_text = scrolledtext.ScrolledText(results_window, wrap=tk.WORD, width=80, height=30)
-        results_text.insert(tk.END, "\n".join(results))
-        results_text.config(state="disabled") # Empêche la modification des résultats
-        results_text.pack(pady=10, padx=10)
-
-        close_button = tk.Button(results_window, text="Fermer", command=lambda: self.close_results(results_window))
-        close_button.pack(pady=10)
+        self.results_text.config(state=tk.NORMAL)
+        self.results_text.delete(1.0, tk.END)
+        self.results_text.insert(tk.END, "\n".join(results))
+        self.results_text.config(state=tk.DISABLED)
 
     def close_results(self, window):
         window.destroy()

@@ -20,9 +20,10 @@ class AttackSelectionPage(tk.Frame):
         self.attacks = {
             "DDoS": tk.BooleanVar(),
             "ICMP DDoS": tk.BooleanVar(),
-             "Brute Force": tk.BooleanVar(),
+            "Brute Force": tk.BooleanVar(),
             "Path Traversal": tk.BooleanVar(),
             # "XSS": tk.BooleanVar(),
+            "SQL Injection": tk.BooleanVar(),
             "CSRF": tk.BooleanVar(),
             "Subdomain Enumeration": tk.BooleanVar(),
             "SSL/TLS Check": tk.BooleanVar(),

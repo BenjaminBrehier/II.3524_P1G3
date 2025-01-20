@@ -12,6 +12,7 @@ from pages.xss import XssPage
 from pages.sniffer import SnifferPage
 from pages.SSL_TLS_Checker import SSLTLSCheckerPage
 from pages.icmpddos import ICMPDdosPage
+from pages.sqli import SQLiPage
 import tkinter.messagebox as messagebox
 
 class WizardController:
@@ -58,6 +59,8 @@ class WizardController:
                 self.frames[attack] = SnifferPage(self.parent, self.controller, self.global_url, False)
             elif attack == "SSL/TLS Check":
                 self.frames[attack] = SSLTLSCheckerPage(self.parent, self.controller, self.global_url, False)
+            elif attack == "SQL Injection":
+                self.frames[attack] = SQLiPage(self.parent, self.controller, self.global_url, False)
 
     def show_current_page(self):
         for frame in self.frames.values():
