@@ -207,7 +207,7 @@ class bruteforcePage(tk.Frame):
 
         self.results_text.config(state=tk.DISABLED)
         with open("report.md", "a", encoding="utf-8") as file:
-            file.write(f"## Analyse de l'attaque Brute Force\n")
+            file.write(f"## Brute Force\n")
             file.write(f"- URL cible : {self.global_url}\n")
             file.write(f"- Fichier des logins : {self.login_file_path}\n")
             file.write(f"- Fichier des mots de passe : {self.password_file_path}\n")

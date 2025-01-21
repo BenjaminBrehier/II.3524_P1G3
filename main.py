@@ -10,7 +10,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Outil Hacking")
-        self.geometry("800x600")
+        self.geometry("1200x1000")
         
         self.container = tk.Frame(self)
         self.container.pack(side="right", expand=True, fill="both")
@@ -44,11 +44,25 @@ class App(tk.Tk):
     
     def create_navigation_menu(self):
         """Création du menu de navigation."""
-        menu_frame = tk.Frame(self, bg="#f0f0f0")
+        menu_frame = tk.Frame(self)
         menu_frame.pack(side="left", fill="y")
         
         buttons = [
             ("Attaques multiples", "AttackSelectionPage"),
+        ]
+        
+        for text, page in buttons:
+            button = tk.Button(
+                menu_frame, text=text, command=partial(self.show_frame, page),
+                padx=10, pady=5
+            )
+            button.pack(fill="x")
+        
+        # Add a gray space between "Attaques multiples" and the rest
+        spacer = tk.Frame(menu_frame, height=20)
+        spacer.pack(fill="x")
+        
+        buttons = [
             ("DDoS", "DdosPage"),
             ("ICMP DDoS", "ICMPDdosPage"),
             ("Certificat SSL", "SSLTLSCheckerPage"),

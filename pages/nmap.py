@@ -135,7 +135,7 @@ class NmapPage(tk.Frame):
         results_text = f"URL cible : {hostname}\n\nRésultats du scan :\n{results}"
 
         with open("report.md", "a", encoding="utf-8") as file:
-            file.write("## Analyse de l'attaque Nmap :\n")
+            file.write("## Nmap :\n")
             file.write(results_text)
             file.write("\n\n")
         self.results_area.config(state="normal")

@@ -53,14 +53,16 @@ class bufferoverflowPage(tk.Frame):
             self.update_result_output(f"Payload envoyé ({buffer_size} octets).\n")
             self.update_result_output(f"Réponse du serveur : {response.status_code}\n{response.text[:200]}...\n")
             with open("report.md", "a", encoding="utf-8") as file:
-                file.write(f"## Analyse de l'attaque Buffer Overflow pour : {target}\n")
-                file.write(f"Payload envoyé ({buffer_size} octets).\n")
-                file.write(f"Réponse du serveur : {response.status_code}\n{response.text[:200]}...\n")
+                file.write(f"## Buffer Overflow\n")
+                file.write(f"- URL cible : {target}\n")
+                file.write(f"- Payload envoyé ({buffer_size} octets).\n")
+                file.write(f"- Réponse du serveur : {response.status_code}\n{response.text[:200]}...\n")
                 file.write("\n\n")
         except requests.exceptions.RequestException as e:
             self.update_result_output(f"Erreur de connexion : {e}\n")
             with open("report.md", "a", encoding="utf-8") as file:
-                file.write(f"## Analyse de l'attaque Buffer Overflow pour : {target}\n")
+                file.write(f"## Buffer Overflow\n")
+                file.write(f"- URL cible : {target}\n")
                 file.write(f"Erreur de connexion : {e}\n")
                 file.write("\n\n")
     def update_result_output(self, text):

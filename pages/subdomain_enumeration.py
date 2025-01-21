@@ -35,6 +35,7 @@ class SubdomainEnumerationPage(tk.Frame):
 
         found_subdomains = []
         self.result_text.delete("1.0", "end")
+        self.result_text.config(state=tk.NORMAL)
         self.result_text.insert("end", f"Analyse des sous-domaines pour : {domain}\n\n")
 
         for sub in subdomains:
@@ -50,11 +51,12 @@ class SubdomainEnumerationPage(tk.Frame):
         if found_subdomains:
             self.result_text.insert("end", f"Sous-domaines trouvés : {', '.join(found_subdomains)}\n")
             with open("report.md", "a", encoding="utf-8") as file:
-                file.write("## Analyse de l'attaque Subdomain Enumeration :\n")
+                file.write("## Subdomain Enumeration :\n")
                 for subdomain in found_subdomains:
                     file.write(f"- {subdomain}\n")
         else:
             self.result_text.insert("end", "Aucun sous-domaine trouvé.\n")
+        self.result_text.config(state=tk.DISABLED)
 
     def start_attack(self):
         """Method to start the analysis externally."""

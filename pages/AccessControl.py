@@ -69,7 +69,7 @@ class AccessControlPage(tk.Frame):
 
         self.result_text.config(state=tk.DISABLED)
         with open("report.md", "a", encoding="utf-8") as file:
-            file.write("## Analyse de l'attaque Access Control :\n")
+            file.write("## Access Control :\n")
             lines = self.result_text.get("1.0", tk.END).splitlines()
             for line in lines[:-1]:
                 file.write(f"- {line}\n")

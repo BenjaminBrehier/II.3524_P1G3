@@ -131,7 +131,7 @@ class ICMPDdosPage(tk.Frame):
             self.results_text.config(state=tk.DISABLED)
 
             with open("report.md", "a", encoding="utf-8") as file:
-                file.write(f"## Analyse de l'attaque ICMP DDoS\n")
+                file.write(f"## ICMP DDoS\n")
                 file.write(f"- Durée totale : {duration:.2f} secondes\n")
                 file.write(f"- Nombre total de requêtes : {self.completed_requests}\n")
                 file.write(f"- Requêtes par seconde : {self.completed_requests/duration:.2f}\n")

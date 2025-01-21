@@ -144,7 +144,7 @@ class DdosPage(tk.Frame):
         )
 
         with open("report.md", "a", encoding="utf-8") as file:
-            file.write(f"## Analyse de l'attaque DDoS\n")
+            file.write(f"## DDoS\n")
             lines = results_text.splitlines()
             for line in lines[:-1]:
                 file.write(f"- {line}\n")

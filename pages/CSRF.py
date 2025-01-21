@@ -33,7 +33,8 @@ class CsrfPage(tk.Frame):
         session_id = self.session_id_entry.get().strip()
         reportLog = ""
 
-        reportLog += "## Analyse de l'attaque CSRF :\n"
+        reportLog += "## CSRF :\n"
+        self.result_area.config(state=tk.NORMAL)
 
         if not target_url.startswith("http"):
             self.result_area.insert(tk.END, "Veuillez entrer une URL valide.\n")
@@ -64,6 +65,8 @@ class CsrfPage(tk.Frame):
         except Exception as e:
             self.result_area.insert(tk.END, f"Erreur lors de l'attaque CSRF : {e}\n")
             reportLog += f"Erreur lors de l'attaque CSRF : {e}\n"
+        
+        self.result_area.config(state=tk.DISABLED)
         
         with open("report.md", "a", encoding="utf-8") as file:
             file.write(reportLog)

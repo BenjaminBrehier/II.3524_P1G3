@@ -39,9 +39,10 @@ class VulnerableComponentsPage(tk.Frame):
             return
 
         self.result_area.delete(1.0, tk.END)
+        self.result_area.config(state=tk.NORMAL)
         self.result_area.insert(tk.END, f"Analyse en cours pour : {target_url}\n\n")
 
-        markdown_results = f"## Analyse des Composants Vulnérables\n\n"
+        markdown_results = f"## Composants Vulnérables\n\n"
         markdown_results += f"URL cible : {target_url}\n"
 
         try:
@@ -79,7 +80,7 @@ class VulnerableComponentsPage(tk.Frame):
             self.result_area.insert(tk.END, f"Erreur : {e}\n")
             markdown_results += f"Erreur : {e}\n"
             self.save_results(markdown_results)
-
+        self.result_area.config(state=tk.DISABLED)
     def find_components(self, url):
         """Détecte les bibliothèques, composants front-end et technologies serveur."""
         components = {}
@@ -233,7 +234,7 @@ class VulnerableComponentsPage(tk.Frame):
         """Sauvegarde les résultats dans un fichier markdown."""
         with open("report.md", "a", encoding="utf-8") as file:
             for line in results.split("\n"):
-                file.write(f"    - {line}\n")
+                file.write(f"{line}\n")
 
     def start_attack(self):
         """Method to start the analysis externally."""
