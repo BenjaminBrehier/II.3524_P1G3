@@ -14,6 +14,9 @@ from pages.SSL_TLS_Checker import SSLTLSCheckerPage
 from pages.icmpddos import ICMPDdosPage
 from pages.sqli import SQLiPage
 import tkinter.messagebox as messagebox
+import markdown
+import webbrowser
+import os
 
 class WizardController:
     def __init__(self, parent, controller, selected_attacks, global_url):
@@ -95,6 +98,50 @@ class WizardController:
             if hasattr(frame, 'start_attack'):
                 print(f"Lancement de l'attaque {attack}")
                 frame.start_attack()
-                self.parent.update() 
+                self.parent.update()
+                # Attendre quelques secondes pour que l'attaque ait le temps de répondre
+                self.parent.after(5000)
             report += f"- {attack}: Résultats de l'attaque...\n"
-        messagebox.showinfo("Rapport", report)
+        
+        markdown_file = "report.md"
+        with open(markdown_file, "r", encoding="utf-8") as f:
+            md_content = f.read()
+
+        # Convertir en HTML avec l'extension pour les blocs de code
+        html_content = markdown.markdown(md_content, extensions=["fenced_code"])
+        html_content = f"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <title>Report</title>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    line-height: 1.6;
+                    margin: 0 auto;
+                    max-width: 800px;
+                    padding: 1em;
+                }}
+                pre {{
+                    background-color: #f4f4f4;
+                    padding: 1em;
+                    border-radius: 5px;
+                    overflow-x: auto;
+                }}
+                code {{
+                    font-family: Consolas, monospace;
+                }}
+            </style>
+        </head>
+        <body>
+        {html_content}
+        </body>
+        </html>
+        """
+
+        html_file = "report.html"
+        with open(html_file, "w", encoding="utf-8") as f:
+            f.write(html_content)
+
+        webbrowser.open(f"file://{os.path.abspath(html_file)}")

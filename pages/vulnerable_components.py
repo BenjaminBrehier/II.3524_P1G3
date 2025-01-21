@@ -232,7 +232,8 @@ class VulnerableComponentsPage(tk.Frame):
     def save_results(self, results):
         """Sauvegarde les résultats dans un fichier markdown."""
         with open("report.md", "a", encoding="utf-8") as file:
-            file.write(results)
+            for line in results.split("\n"):
+                file.write(f"    - {line}\n")
 
     def start_attack(self):
         """Method to start the analysis externally."""
