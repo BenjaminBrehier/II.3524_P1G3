@@ -18,6 +18,8 @@ Pour utiliser Vulnerable Components, vous devez définir la variable d'environne
 export GITHUB_TOKEN="YOUR_GITHUB_TOKEN"
 ```
 
+Attention : L'attaque ICMP DDOS nécessite un accès root
+
 ## Ressources
 
 - Le fichier csrf.php est un exemple de fichier serveur vulnérable.
